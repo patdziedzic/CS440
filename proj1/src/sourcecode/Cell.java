@@ -10,7 +10,7 @@ public class Cell {
     private boolean onFire; //initialized false
     private double flammability; //flammability of the cell based on neighbors, initially 0
 
-
+    //Default Cell Constructor
     public Cell() {
         this.numOpenNeighbors = 0;
         this.canOpen = true;
