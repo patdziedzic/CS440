@@ -16,6 +16,6 @@ public class Cell {
         this.canOpen = true;
         this.isOpen = false;
         this.onFire = false;
-        flammability = 0;
+        this.flammability = 0;
     }
 }
