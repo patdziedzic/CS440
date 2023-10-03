@@ -70,7 +70,8 @@ public class Main {
             Cell randomBlocked = blockedCandidates.get(randomIndex);
             openCell(randomBlocked);
             printShip();
-
+            updateArrayList(blockedCandidates);
+            
             //Check U/D/L/R if it is now a candidate, if it is then add it
             //up
             try {
@@ -131,7 +132,7 @@ public class Main {
     private static void updateArrayList(ArrayList<Cell> a) {
         for (int i = 0; i < a.size(); i++) {
             Cell c = a.get(i);
-            if (c.getIsOpen() || !c.getCanOpen())
+            if (c.getIsOpen() || c.getNumOpenNeighbors() > 1)
                 a.remove(c);
         }
     }
