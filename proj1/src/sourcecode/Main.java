@@ -12,10 +12,6 @@ public class Main {
     private static Cell initial;
 
 
-
-
-
-
     /**
      * Get random int between min to max
      * @return randomly generated int
@@ -31,8 +27,6 @@ public class Main {
     private static double rand(double min, double max) {
         return ((Math.random() * (max - min)) + min);
     }
-
-
 
 
 
@@ -178,7 +172,6 @@ public class Main {
     private static Cell openCell(Cell cell) {
         //open the given cell
         cell.setIsOpen(true);
-        cell.setCanOpen(false);
 
         //Set Neighbors' numOpenNeighbors
         //up
@@ -198,20 +191,6 @@ public class Main {
             ship[row][col].incNumOpenNeighbors();
         } catch (ArrayIndexOutOfBoundsException ignore) { }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

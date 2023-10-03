@@ -7,7 +7,6 @@ public class Cell {
 
     //REGARDING OPENNESS
     private int numOpenNeighbors; //increment for each new open neighbor
-    private boolean canOpen; //if numOpenNeighbors > 1, make false
     private boolean isOpen; //initialized false
 
     //REGARDING FLAMMABILITY
@@ -15,13 +14,22 @@ public class Cell {
     private double flammability; //flammability of the cell based on neighbors, initially 0
     private int fireNeighbors; //K
 
+    //REACHING NEIGHBORS OF CELLS
+    public Cell up;
+    public Cell down;
+    public Cell left;
+    public Cell right;
+
     //Default Cell Constructor
     public Cell() {
         this.numOpenNeighbors = 0;
-        this.canOpen = true;
         this.isOpen = false;
         this.onFire = false;
         this.flammability = 0;
+        this.up = Main.ship[row-1][col];
+        this.down = Main.ship[row+1][col];
+        this.left = Main.ship[row][col-1];
+        this.right = Main.ship[row][col+1];
     }
 
     //Cell Constructor given row and col
@@ -30,10 +38,13 @@ public class Cell {
         this.col = col;
 
         this.numOpenNeighbors = 0;
-        this.canOpen = true;
         this.isOpen = false;
         this.onFire = false;
         this.flammability = 0;
+        this.up = Main.ship[row-1][col];
+        this.down = Main.ship[row+1][col];
+        this.left = Main.ship[row][col-1];
+        this.right = Main.ship[row][col+1];
     }
 
     public int getNumOpenNeighbors() {
@@ -42,18 +53,8 @@ public class Cell {
 
     public void incNumOpenNeighbors() {
         this.numOpenNeighbors++;
-        if (numOpenNeighbors > 1){
-            canOpen = false;
-        }
     }
 
-    public boolean getCanOpen() {
-        return canOpen;
-    }
-
-    public void setCanOpen(boolean canOpen) {
-        this.canOpen = canOpen;
-    }
 
     public boolean getIsOpen() {
         return isOpen;
@@ -102,4 +103,14 @@ public class Cell {
         } catch (ArrayIndexOutOfBoundsException ignore) { }
     }
      */
+
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof Cell){
+            Cell c = (Cell) obj;
+            return c.row == this.row && c.col == this.col;
+        }
+        return false;
+    }
 }
