@@ -3,7 +3,7 @@ package sourcecode;
 import java.util.ArrayList;
 
 public class Main {
-    public static final int D = 5;
+    public static final int D = 500;
     public static final double q = 0.5;
 
 
@@ -45,10 +45,11 @@ public class Main {
 
         //open the initial cell
         initial = openCell(ship[row][col]);
-        printShip();
+        //printShip();
 
         openBlockedCandidates();
-        //openDeadEnds();
+        System.out.println("Deadends are opening");
+        openDeadEnds();
     }
 
     private static void openBlockedCandidates() {
@@ -60,7 +61,7 @@ public class Main {
                 /*if (!ship[r][c].getIsOpen() && ship[r][c].getNumOpenNeighbors() == 1) {
                     blockedCandidates.add(ship[r][c]);
                 }*/
-                addCandidate(ship[r][c], blockedCandidates);
+                addBlockedCandidate(ship[r][c], blockedCandidates);
             }
         }
 
@@ -69,32 +70,32 @@ public class Main {
             int randomIndex = rand(0, blockedCandidates.size() - 1);
             Cell randomBlocked = blockedCandidates.get(randomIndex);
             openCell(randomBlocked);
-            printShip();
-            updateArrayList(blockedCandidates);
-            
+            //printShip();
+            updateBlockedArrayList(blockedCandidates);
+
             //Check U/D/L/R if it is now a candidate, if it is then add it
             //up
             try {
-                addCandidate(ship[randomBlocked.getRow() - 1][randomBlocked.getCol()], blockedCandidates);
+                addBlockedCandidate(ship[randomBlocked.getRow() - 1][randomBlocked.getCol()], blockedCandidates);
             } catch (ArrayIndexOutOfBoundsException ignore) { }
             //down
             try {
-                addCandidate(ship[randomBlocked.getRow() + 1][randomBlocked.getCol()], blockedCandidates);
+                addBlockedCandidate(ship[randomBlocked.getRow() + 1][randomBlocked.getCol()], blockedCandidates);
             } catch (ArrayIndexOutOfBoundsException ignore) { }
             //left
             try {
-                addCandidate(ship[randomBlocked.getRow()][randomBlocked.getCol() - 1], blockedCandidates);
+                addBlockedCandidate(ship[randomBlocked.getRow()][randomBlocked.getCol() - 1], blockedCandidates);
             } catch (ArrayIndexOutOfBoundsException ignore) { }
             //right
             try {
-                addCandidate(ship[randomBlocked.getRow()][randomBlocked.getCol() + 1], blockedCandidates);
+                addBlockedCandidate(ship[randomBlocked.getRow()][randomBlocked.getCol() + 1], blockedCandidates);
             } catch (ArrayIndexOutOfBoundsException ignore) { }
 
-            updateArrayList(blockedCandidates);
+            updateBlockedArrayList(blockedCandidates);
         }
     }
 
-    private static void addCandidate(Cell cell, ArrayList<Cell> a) {
+    private static void addBlockedCandidate(Cell cell, ArrayList<Cell> a) {
         if (!cell.getIsOpen() && cell.getNumOpenNeighbors() == 1) {
             a.add(cell);
         }
@@ -117,9 +118,31 @@ public class Main {
         while (deadEnds.size() > threshold) {
             int randomIndex = rand(0, deadEnds.size()-1);
             Cell randomDeadEnd = deadEnds.get(randomIndex);
-            openCell(randomDeadEnd);
-
-            updateArrayList(deadEnds);
+            ArrayList<Cell> blockedNeighbors = new ArrayList<>();
+            try {
+                if(!ship[randomDeadEnd.getRow() - 1][randomDeadEnd.getCol()].getIsOpen())
+                    blockedNeighbors.add(ship[randomDeadEnd.getRow() - 1][randomDeadEnd.getCol()]);
+            } catch (ArrayIndexOutOfBoundsException ignore) { }
+            try {
+                if(!ship[randomDeadEnd.getRow() + 1][randomDeadEnd.getCol()].getIsOpen())
+                    blockedNeighbors.add(ship[randomDeadEnd.getRow() + 1][randomDeadEnd.getCol()]);
+            } catch (ArrayIndexOutOfBoundsException ignore) { }
+            try {
+                if(!ship[randomDeadEnd.getRow()][randomDeadEnd.getCol()-1].getIsOpen())
+                    blockedNeighbors.add(ship[randomDeadEnd.getRow()][randomDeadEnd.getCol()-1]);
+            } catch (ArrayIndexOutOfBoundsException ignore) { }
+            try {
+                if(!ship[randomDeadEnd.getRow()][randomDeadEnd.getCol()+1].getIsOpen())
+                    blockedNeighbors.add(ship[randomDeadEnd.getRow()][randomDeadEnd.getCol()+1]);
+            } catch (ArrayIndexOutOfBoundsException ignore) { }
+            
+            randomIndex = rand(0, blockedNeighbors.size()-1);
+            if(blockedNeighbors.size() != 0) {
+                Cell randomNeighbor = blockedNeighbors.get(randomIndex);
+                openCell(randomNeighbor);
+            }
+            //printShip();
+            updateDeadendsArrayList(deadEnds);
         }
 
         //get in an arraylist all cells that are open and have 1 open neighbors
@@ -127,9 +150,9 @@ public class Main {
 
 
     /**
-     * Updates blockedCandidates or deadEnds
+     * Updates blockedCandidates
      */
-    private static void updateArrayList(ArrayList<Cell> a) {
+    private static void updateBlockedArrayList(ArrayList<Cell> a) {
         for (int i = 0; i < a.size(); i++) {
             Cell c = a.get(i);
             if (c.getIsOpen() || c.getNumOpenNeighbors() > 1)
@@ -137,7 +160,16 @@ public class Main {
         }
     }
 
-
+ /**
+     * Updates deadEnds
+     */
+    private static void updateDeadendsArrayList(ArrayList<Cell> a) {
+        for (int i = 0; i < a.size(); i++) {
+            Cell c = a.get(i);
+            if (c.getNumOpenNeighbors() > 1)
+                a.remove(c);
+        }
+    }
 
 
     /**
