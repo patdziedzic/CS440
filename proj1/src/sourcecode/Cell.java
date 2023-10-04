@@ -19,32 +19,54 @@ public class Cell {
     public Cell down;
     public Cell left;
     public Cell right;
+    public boolean isVisited;
 
     //Default Cell Constructor
     public Cell() {
         this.numOpenNeighbors = 0;
         this.isOpen = false;
         this.onFire = false;
-        this.flammability = 0;
-        this.up = Main.ship[row-1][col];
-        this.down = Main.ship[row+1][col];
-        this.left = Main.ship[row][col-1];
-        this.right = Main.ship[row][col+1];
+        this.k = 0;
+        this.flammability = 1-Math.pow((1-Main.q),k);
+        try {
+            this.up = Main.ship[row-1][col];
+        } catch (ArrayIndexOutOfBoundsException ignore){}
+        try {
+             this.down = Main.ship[row+1][col];
+        } catch (ArrayIndexOutOfBoundsException ignore){}
+        try {
+            this.left = Main.ship[row][col-1];
+        } catch (ArrayIndexOutOfBoundsException ignore){}
+        try {
+            this.right = Main.ship[row][col+1];
+        } catch (ArrayIndexOutOfBoundsException ignore){}
+        
+        this.isVisited = false;
     }
 
     //Cell Constructor given row and col
     public Cell(int row, int col) {
         this.row = row;
         this.col = col;
-
         this.numOpenNeighbors = 0;
         this.isOpen = false;
         this.onFire = false;
-        this.flammability = 0;
-        this.up = Main.ship[row-1][col];
-        this.down = Main.ship[row+1][col];
-        this.left = Main.ship[row][col-1];
-        this.right = Main.ship[row][col+1];
+        this.k = 0;
+        this.flammability = 1-Math.pow((1-Main.q),k);
+        try {
+            this.up = Main.ship[row-1][col];
+        } catch (ArrayIndexOutOfBoundsException ignore){}
+        try {
+             this.down = Main.ship[row+1][col];
+        } catch (ArrayIndexOutOfBoundsException ignore){}
+        try {
+            this.left = Main.ship[row][col-1];
+        } catch (ArrayIndexOutOfBoundsException ignore){}
+        try {
+            this.right = Main.ship[row][col+1];
+        } catch (ArrayIndexOutOfBoundsException ignore){}
+        
+        this.isVisited = false;
     }
 
     public int getNumOpenNeighbors() {
@@ -96,6 +118,18 @@ public class Cell {
         this.col = col;
     }
 
+    public void incK(){
+        k++;
+        flammability = 1-Math.pow((1-Main.q),k);
+    }
+
+    public boolean getIsVisited(){ 
+        return isVisited;
+    }
+
+    public void setIsVisited(boolean setMark){
+        isVisited = setMark;
+    }
 /*
     private void changeNeighborK(int row, int col) {
         try {
