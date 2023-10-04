@@ -4,17 +4,18 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 
-public class bfs {
-    public ArrayList<Cell> shortestPathBFS(Cell state, Cell button){
-        Queue <Cell> Q = new LinkedList<Cell>(); //tell us what to explore next
-        ArrayList<Cell> shortestPath = new ArrayList<>(); //keeps track of where bot has visited
+public class Bfs {
+    public static LinkedList<Cell> shortestPathBFS(Cell state, Cell button){
+        Queue<Cell> Q = new LinkedList<>(); //tell us what to explore next
+        LinkedList<Cell> shortestPath = new LinkedList<>(); //keeps track of where bot has visited
+        //^ LinkedList bc better for adding to the end and removing the first than an ArrayList
         Q.add(state);
         shortestPath.add(state);
-        state.setIsVisited(true);
+        state.isVisited = true;
         
         while (!Q.isEmpty()) {
             state = Q.remove();
-            state.setIsVisited(true);
+            state.isVisited = true;
             shortestPath.add(state);
             
             if(state.equals(button))
@@ -33,7 +34,7 @@ public class bfs {
         return null;
     }
 
-    private boolean isValid(Cell c) {
-        return (!c.equals(null) && !c.getOnFire() && c.getIsOpen() && !c.getIsVisited());
+    private static boolean isValid(Cell c) {
+        return (c != null && !c.getOnFire() && c.isOpen && !c.isVisited);
     }
 }
