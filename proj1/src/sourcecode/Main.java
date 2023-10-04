@@ -31,7 +31,6 @@ public class Main {
 
 
 
-
     private static void makeShip() {
         //ship is a D x D 2D array of Cell objects
         int row = rand(0, D-1);

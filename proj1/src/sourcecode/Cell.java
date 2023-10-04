@@ -12,7 +12,7 @@ public class Cell {
     //REGARDING FLAMMABILITY
     private boolean onFire; //initialized false
     private double flammability; //flammability of the cell based on neighbors, initially 0
-    private int fireNeighbors; //K
+    private int k; //number of fire neighbours
 
     //REACHING NEIGHBORS OF CELLS
     public Cell up;
