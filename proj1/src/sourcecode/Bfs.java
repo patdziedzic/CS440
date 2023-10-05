@@ -1,20 +1,20 @@
 package sourcecode;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
 
 public class Bfs {
+    private static ArrayList<Cell> isVisited;
+
     public static LinkedList<Cell> shortestPathBFS(Cell bot, Cell button){
         Queue<Cell> Q = new LinkedList<>(); //tell us what to explore next
         HashMap<Cell, Cell> parentNodes = new HashMap<>(); //keeps track of where bot has visited
         //^ Map the previous to the next by using .put(next, prev)
+        isVisited = new ArrayList<>();
         Q.add(bot);
         
         while (!Q.isEmpty()) {
             bot = Q.remove();
-            bot.isVisited = true;
+            isVisited.add(bot);
             //shortestPath.add(bot);
 
             if(bot.equals(button)) {
@@ -50,6 +50,6 @@ public class Bfs {
     }
 
     private static boolean isValid(Cell c) {
-        return (c != null && !c.getOnFire() && c.isOpen && !c.isVisited);
+        return (c != null && !c.getOnFire() && c.isOpen && !isVisited.contains(c));
     }
 }
