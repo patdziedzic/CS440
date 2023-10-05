@@ -36,6 +36,8 @@ public class Cell {
         this.onFire = false;
         this.k = 0;
         this.flammability = 1-Math.pow((1-Main.q),k);
+        this.isBot = false;
+        this.isButton = false;
         try {
             this.up = Ship.ship[row-1][col];
         } catch (ArrayIndexOutOfBoundsException ignore){}
@@ -80,10 +82,14 @@ public class Cell {
     public void setOnFire(boolean value) {
         onFire = value;
         if (value) {
-            up.incK();
-            down.incK();
-            left.incK();
-            right.incK();
+            if(up != null)
+                up.incK();
+            if(down != null)
+                down.incK();
+            if(left != null)
+                left.incK();
+            if(right != null)
+                right.incK();
         }
     }
 

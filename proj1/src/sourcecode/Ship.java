@@ -4,24 +4,11 @@ import java.util.ArrayList;
 
 public class Ship {
     //the ship layout - 2D array of Cell objects
-    public static final int D = 100;
+    public static final int D = 10;
     public static Cell[][] ship;
     public static Cell initial;
 
-    private static void printShip() {
-        for (int r = 0; r < D; r++) {
-            for (int c = 0; c < D; c++) {
-                if (ship[r][c].isOpen)
-                    System.out.print(1);
-                else
-                    System.out.print(0);
-                System.out.print(" ");
-            }
-            System.out.println();
-        }
 
-        System.out.println("\n\n");
-    }
 
     public static Cell[][] makeShip() {
         //ship is a D x D 2D array of Cell objects
