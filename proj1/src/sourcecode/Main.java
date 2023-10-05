@@ -5,6 +5,8 @@ import java.util.LinkedList;
 
 public class Main {
     public static final double q = 0.0;
+    private static final int numTests = 100;
+    private static LinkedList<Boolean> testResults = new LinkedList<>();
     private static ArrayList<Cell> openCells = new ArrayList<>();
 
 
@@ -318,12 +320,34 @@ public class Main {
     }
 
 
+    private static void runTests_Bot2() {
+        for (int test = 0; test < numTests; test++) {
+            System.out.println("CURRENT TEST #: " + test);
+            Cell[][] tempShip = Ship.makeShip();
+            for (int i = 0; i < tempShip.length; i++){
+                for (int j = 0; j < tempShip[0].length; j++){
+                    if (tempShip[i][j].isOpen)
+                        openCells.add(tempShip[i][j]);
+                }
+            }
+            testResults.add(runBot2(tempShip));
+            System.out.println("\n\n");
+        }
+        int totalWins = 0;
+        for (Boolean result : testResults) {
+            if (result)
+                totalWins++;
+        }
+        System.out.println("Total Wins: " + totalWins);
+    }
+
+
     public static void main(String[] args) {
         //Initialize the ship
         Cell[][] ship = Ship.makeShip();
-        for(int i = 0; i < ship.length; i++){
-            for(int j = 0; j < ship[0].length; j++){
-                if(ship[i][j].isOpen)
+        for (int i = 0; i < ship.length; i++){
+            for (int j = 0; j < ship[0].length; j++){
+                if (ship[i][j].isOpen)
                     openCells.add(ship[i][j]);
             }
         }
@@ -337,9 +361,13 @@ public class Main {
         //System.out.println("Did Bot 1 make it to the button? " + runBot1(ship));
 
         //BOT 2
-        //System.out.println("Did Bot 2 make it to the button? " + runBot2(ship));
+        System.out.println("Did Bot 2 make it to the button? " + runBot2(ship));
 
         //BOT 3
-        System.out.println("Did Bot 3 make it to the button? " + runBot3(ship));
+        //System.out.println("Did Bot 3 make it to the button? " + runBot3(ship));
+
+
+        //Store a bunch of tests (for bot 2)
+        //runTests_Bot2();
     }
 }
