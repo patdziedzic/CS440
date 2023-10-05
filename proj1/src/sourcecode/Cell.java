@@ -38,18 +38,6 @@ public class Cell {
         this.flammability = 1-Math.pow((1-Main.q),k);
         this.isBot = false;
         this.isButton = false;
-        try {
-            this.up = Ship.ship[row-1][col];
-        } catch (ArrayIndexOutOfBoundsException ignore){}
-        try {
-             this.down = Ship.ship[row+1][col];
-        } catch (ArrayIndexOutOfBoundsException ignore){}
-        try {
-            this.left = Ship.ship[row][col-1];
-        } catch (ArrayIndexOutOfBoundsException ignore){}
-        try {
-            this.right = Ship.ship[row][col+1];
-        } catch (ArrayIndexOutOfBoundsException ignore){}
         
         this.isVisited = false;
     }
@@ -64,6 +52,21 @@ public class Cell {
 
     public int getCol() {
         return col;
+    }
+
+    public void setNeighbors() {
+        try {
+            this.up = Ship.ship[row-1][col];
+        } catch (ArrayIndexOutOfBoundsException ignore){}
+        try {
+            this.down = Ship.ship[row+1][col];
+        } catch (ArrayIndexOutOfBoundsException ignore){}
+        try {
+            this.left = Ship.ship[row][col-1];
+        } catch (ArrayIndexOutOfBoundsException ignore){}
+        try {
+            this.right = Ship.ship[row][col+1];
+        } catch (ArrayIndexOutOfBoundsException ignore){}
     }
 
     public void incK() {

@@ -29,6 +29,12 @@ public class Ship {
         openBlockedCandidates();
         System.out.println("Dead ends are opening");
         openDeadEnds();
+
+        for (int r = 0; r < D; r++) {
+            for (int c = 0; c < D; c++) {
+                ship[r][c].setNeighbors();
+            }
+        }
         
         return ship;
     }

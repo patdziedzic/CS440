@@ -1,33 +1,50 @@
 package sourcecode;
 
-import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
 
 public class Bfs {
     public static LinkedList<Cell> shortestPathBFS(Cell bot, Cell button){
         Queue<Cell> Q = new LinkedList<>(); //tell us what to explore next
-        LinkedList<Cell> shortestPath = new LinkedList<>(); //keeps track of where bot has visited
-        //^ LinkedList bc better for adding to the end and removing the first than an ArrayList
+        HashMap<Cell, Cell> parentNodes = new HashMap<>(); //keeps track of where bot has visited
+        //^ Map the previous to the next by using .put(next, prev)
         Q.add(bot);
         
         while (!Q.isEmpty()) {
             bot = Q.remove();
             bot.isVisited = true;
-            shortestPath.add(bot);
-            
-            if(bot.equals(button))
+            //shortestPath.add(bot);
+
+            if(bot.equals(button)) {
+                //Once path found, start from end and go back and store the path into LinkedList
+                LinkedList<Cell> shortestPath = new LinkedList<>();
+                Cell ptr = button;
+                while (ptr != null) {
+                    shortestPath.add(ptr);
+                    ptr = parentNodes.get(ptr);
+                }
+                Collections.reverse(shortestPath);
                 return shortestPath;
+            }
     
-            if(isValid(bot.up)) 
+            if(isValid(bot.up)) {
+                parentNodes.put(bot.up, bot); //next, previous
                 Q.add(bot.up);
-            if(isValid(bot.down)) 
+            }
+            if(isValid(bot.down)) {
+                parentNodes.put(bot.down, bot);
                 Q.add(bot.down);
-            if(isValid(bot.left))
+            }
+            if(isValid(bot.left)) {
+                parentNodes.put(bot.left, bot);
                 Q.add(bot.left);
-            if(isValid(bot.right))
+            }
+            if(isValid(bot.right)) {
+                parentNodes.put(bot.right, bot);
                 Q.add(bot.right);
-    
+            }
         }
         return null;
     }

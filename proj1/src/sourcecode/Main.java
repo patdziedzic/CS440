@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class Main {
-    public static final double q = .00;
+    public static final double q = 0.6;
     private static ArrayList<Cell> openCells = new ArrayList<>();
 
 
@@ -35,62 +35,75 @@ public class Main {
         Cell button = openCells.get(randIndex);
         button.isButton = true;
 
-        if (bot.isButton)
+        if (bot.isButton) {
+            System.out.println("Bot spawns on button.");
             return true;
+        }
 
         //initialize the fire
-        ArrayList<Cell> fireCells = new ArrayList<>();
+        LinkedList<Cell> fireCells = new LinkedList<>();
         randIndex = Main.rand(0, openCells.size()-1);
         Cell initialFire = openCells.get(randIndex);
         initialFire.setOnFire(true); //setting on fire automatically updates neighbors
         fireCells.add(initialFire);
 
-        if (bot.getOnFire() || button.getOnFire())
+        if (bot.getOnFire() || button.getOnFire()) {
+            System.out.println("Fire spawns on bot or button.");
             return false;
+        }
 
 
         printShip(ship, bot, button, initialFire);
         
         //BFS Shortest Path from bot -> button
         LinkedList<Cell> shortestPath = Bfs.shortestPathBFS(bot, button);
-        if (shortestPath == null)
+        if (shortestPath == null) {
+            System.out.println("Shortest Path is null.");
             return false;
+        }
 
         shortestPath.removeFirst();
 
         int t = 0;
         while (!shortestPath.isEmpty()) {
-            System.out.println("t = "+ t);
+            System.out.println("t = "+ t + " --> @(" + bot.getRow() + ", " + bot.getCol() + ")");
             //move the bot
             Cell neighbor = shortestPath.removeFirst();
             bot.isBot = false;
             neighbor.isBot = true;
             bot = neighbor;
 
-            if (bot.isButton)
+            if (bot.isButton) {
+                System.out.println("Bot made it to the button!");
                 return true;
+            }
             else {
                 //else, potentially advance fire
-                for (Cell fireCell : fireCells) {
+                LinkedList<Cell> copyFireCells = (LinkedList<Cell>) fireCells.clone();
+                while (!copyFireCells.isEmpty()) {
+                    Cell fireCell = copyFireCells.removeFirst();
                     tryFireNeighbor(fireCell.up, fireCells);
                     tryFireNeighbor(fireCell.down, fireCells);
                     tryFireNeighbor(fireCell.left, fireCells);
                     tryFireNeighbor(fireCell.right, fireCells);
                 }
 
-                if (bot.getOnFire() || button.getOnFire())
+                if (bot.getOnFire() || button.getOnFire()) {
+                    System.out.println("The bot or button caught on fire :(");
                     return false;
+                }
             }
             t++;
         }
         //if the shortest path is fully traversed and bot didn't reach button, loss
+        System.out.println("Bot never reached button...");
         return false;
     }
 
     /**
      * Try to ignite the given neighbor of a fire cell
      */
-    private static void tryFireNeighbor(Cell neighbor, ArrayList<Cell> fireCells) {
+    private static void tryFireNeighbor(Cell neighbor, LinkedList<Cell> fireCells) {
         if (neighbor != null && Math.random() <= neighbor.flammability && neighbor.isOpen) {
             neighbor.setOnFire(true);
             fireCells.add(neighbor);
