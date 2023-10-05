@@ -14,6 +14,7 @@ public class Cell {
     public Cell down;
     public Cell left;
     public Cell right;
+    public boolean isVisited;
 
     //IDENTITY
     public boolean isBot;
@@ -37,6 +38,7 @@ public class Cell {
         this.flammability = 1-Math.pow((1-Main.q),k);
         this.isBot = false;
         this.isButton = false;
+        this.isVisited = false;
     }
 
     public void incNumOpenNeighbors() {

@@ -154,6 +154,7 @@ public class Main {
 
 
         int t = 0;
+        System.out.println(t);
         while (!bot.isButton && !bot.getOnFire() && !button.getOnFire()) {
             //BFS Shortest Path from bot -> button
             LinkedList<Cell> shortestPath = Bfs.shortestPathBFS(bot, button);

@@ -3,18 +3,23 @@ package sourcecode;
 import java.util.*;
 
 public class Bfs {
-    private static ArrayList<Cell> isVisited;
 
     public static LinkedList<Cell> shortestPathBFS(Cell bot, Cell button){
+        //make sure isVisited is false for all cells
+        for (int r = 0; r < Ship.D; r++) {
+            for (int c = 0; c < Ship.D; c++) {
+                Ship.ship[r][c].isVisited = false;
+            }
+        }
+
         Queue<Cell> Q = new LinkedList<>(); //tell us what to explore next
         HashMap<Cell, Cell> parentNodes = new HashMap<>(); //keeps track of where bot has visited
         //^ Map the previous to the next by using .put(next, prev)
-        isVisited = new ArrayList<>();
         Q.add(bot);
         
         while (!Q.isEmpty()) {
             bot = Q.remove();
-            isVisited.add(bot);
+            bot.isVisited = true;
             //shortestPath.add(bot);
 
             if(bot.equals(button)) {
@@ -50,6 +55,6 @@ public class Bfs {
     }
 
     private static boolean isValid(Cell c) {
-        return (c != null && !c.getOnFire() && c.isOpen && !isVisited.contains(c));
+        return (c != null && !c.getOnFire() && c.isOpen && !c.isVisited);
     }
 }
