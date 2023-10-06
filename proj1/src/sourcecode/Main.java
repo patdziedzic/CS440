@@ -63,6 +63,9 @@ public class Main {
             return false;
         }
 
+        //If the bot is closer than the fire, it will definitely win. Return true.
+        if(checkDistBotVsFire(bot, initialFire, button))
+            return true;
 
         //printShip(ship, bot, button, initialFire);
 
@@ -426,5 +429,20 @@ public class Main {
         }
         double avg = sum/numQTests;
         System.out.println("Avg Success Rate for q = " + q + " is " + avg);
+    }
+
+    /**
+     * Check the distance from bot to button and fire to button.
+     * @return true if the bot is closer to the button than the fire
+     */
+    private static boolean checkDistBotVsFire(Cell bot, Cell fire, Cell button) {
+        //BFS Shortest Path from bot -> button
+        LinkedList<Cell> shortestPath_Bot = Bfs.shortestPathBFS(bot, button);
+        //BFS Shortest Path from fire -> button
+        LinkedList<Cell> shortestPath_Fire = Bfs.shortestPathBFS(fire, button);
+        try {
+            return shortestPath_Bot.size() <= shortestPath_Fire.size();
+        }
+        catch (NullPointerException e) { return false; }
     }
 }
