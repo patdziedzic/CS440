@@ -320,7 +320,7 @@ public class Main {
     }
 
 
-    private static void runTests_Bot2() {
+    private static void runTests(int bot) {
         for (int test = 0; test < numTests; test++) {
             System.out.println("CURRENT TEST #: " + test);
             Cell[][] tempShip = Ship.makeShip();
@@ -330,7 +330,12 @@ public class Main {
                         openCells.add(tempShip[i][j]);
                 }
             }
-            testResults.add(runBot2(tempShip));
+            if (bot == 1)
+                testResults.add(runBot1(tempShip));
+            else if (bot == 2)
+                testResults.add(runBot2(tempShip));
+            else if (bot == 3)
+                testResults.add(runBot3(tempShip));
             System.out.println("\n\n");
         }
         int totalWins = 0;
@@ -358,10 +363,10 @@ public class Main {
         //printShip();
 
         //BOT 1
-        //System.out.println("Did Bot 1 make it to the button? " + runBot1(ship));
+        System.out.println("Did Bot 1 make it to the button? " + runBot1(ship));
 
         //BOT 2
-        System.out.println("Did Bot 2 make it to the button? " + runBot2(ship));
+        //System.out.println("Did Bot 2 make it to the button? " + runBot2(ship));
 
         //BOT 3
         //System.out.println("Did Bot 3 make it to the button? " + runBot3(ship));

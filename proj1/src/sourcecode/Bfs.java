@@ -16,10 +16,10 @@ public class Bfs {
         HashMap<Cell, Cell> parentNodes = new HashMap<>(); //keeps track of where bot has visited
         //^ Map the previous to the next by using .put(next, prev)
         Q.add(bot);
+        bot.isVisited = true;
         
         while (!Q.isEmpty()) {
             bot = Q.remove();
-            bot.isVisited = true;
             //shortestPath.add(bot);
 
             if(bot.equals(button)) {
@@ -37,18 +37,22 @@ public class Bfs {
             if(isValid(bot.up)) {
                 parentNodes.put(bot.up, bot); //next, previous
                 Q.add(bot.up);
+                bot.up.isVisited = true;
             }
             if(isValid(bot.down)) {
                 parentNodes.put(bot.down, bot);
                 Q.add(bot.down);
+                bot.down.isVisited = true;
             }
             if(isValid(bot.left)) {
                 parentNodes.put(bot.left, bot);
                 Q.add(bot.left);
+                bot.left.isVisited = true;
             }
             if(isValid(bot.right)) {
                 parentNodes.put(bot.right, bot);
                 Q.add(bot.right);
+                bot.right.isVisited = true;
             }
         }
         return null;
@@ -74,7 +78,6 @@ public class Bfs {
 
         while (!Q.isEmpty()) {
             bot = Q.remove();
-            bot.isVisited = true;
             //shortestPath.add(bot);
 
             if(bot.equals(button)) {
@@ -92,6 +95,7 @@ public class Bfs {
             if(isValid(bot.up)) {
                 parentNodes.put(bot.up, bot); //next, previous
                 Q.add(bot.up);
+                bot.isVisited = true;
             }
             if(isValid(bot.down)) {
                 parentNodes.put(bot.down, bot);
