@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class Main {
-    public static final double q = 0.0;
+    public static double q;
     private static final int numTests = 100;
-    private static LinkedList<Boolean> testResults = new LinkedList<>();
+    private static final double numQTests = 10.0;
     private static ArrayList<Cell> openCells = new ArrayList<>();
 
 
@@ -26,6 +26,10 @@ public class Main {
         return ((Math.random() * (max - min)) + min);
     }
 
+
+
+
+
     /**
      * Run an experiment for Bot 1
      * @param ship the ship to run the experiment on
@@ -43,7 +47,7 @@ public class Main {
         button.isButton = true;
 
         if (bot.isButton) {
-            System.out.println("Bot spawns on button.");
+            //System.out.println("Bot spawns on button.");
             return true;
         }
 
@@ -55,25 +59,25 @@ public class Main {
         fireCells.add(initialFire);
 
         if (bot.getOnFire() || button.getOnFire()) {
-            System.out.println("Fire spawns on bot or button.");
+            //System.out.println("Fire spawns on bot or button.");
             return false;
         }
 
 
-        printShip(ship, bot, button, initialFire);
-        
+        //printShip(ship, bot, button, initialFire);
+
         //BFS Shortest Path from bot -> button
         LinkedList<Cell> shortestPath = Bfs.shortestPathBFS(bot, button);
         if (shortestPath == null) {
-            System.out.println("Shortest Path is null.");
+            //System.out.println("Shortest Path is null.");
             return false;
         }
 
         shortestPath.removeFirst();
 
-        int t = 0;
+        //int t = 0;
         while (!shortestPath.isEmpty()) {
-            System.out.println("t = "+ t + " --> @(" + bot.getRow() + ", " + bot.getCol() + ")");
+            //System.out.println("t = "+ t + " --> @(" + bot.getRow() + ", " + bot.getCol() + ")");
             //move the bot
             Cell neighbor = shortestPath.removeFirst();
             bot.isBot = false;
@@ -81,7 +85,7 @@ public class Main {
             bot = neighbor;
 
             if (bot.isButton) {
-                System.out.println("Bot made it to the button!");
+                //System.out.println("Bot made it to the button!");
                 return true;
             }
             else {
@@ -96,27 +100,16 @@ public class Main {
                 }
 
                 if (bot.getOnFire() || button.getOnFire()) {
-                    System.out.println("The bot or button caught on fire :(");
+                    //System.out.println("The bot or button caught on fire :(");
                     return false;
                 }
             }
-            t++;
+            //t++;
         }
         //if the shortest path is fully traversed and bot didn't reach button, loss
-        System.out.println("Bot never reached button...");
+        //System.out.println("Bot never reached button...");
         return false;
     }
-
-    /**
-     * Try to ignite the given neighbor of a fire cell
-     */
-    private static void tryFireNeighbor(Cell neighbor, LinkedList<Cell> fireCells) {
-        if (neighbor != null && Math.random() <= neighbor.flammability && neighbor.isOpen) {
-            neighbor.setOnFire(true);
-            fireCells.add(neighbor);
-        }
-    }
-
 
     /**
      * Run an experiment for Bot 2
@@ -135,7 +128,7 @@ public class Main {
         button.isButton = true;
 
         if (bot.isButton) {
-            System.out.println("Bot spawns on button.");
+            //System.out.println("Bot spawns on button.");
             return true;
         }
 
@@ -147,26 +140,26 @@ public class Main {
         fireCells.add(initialFire);
 
         if (bot.getOnFire() || button.getOnFire()) {
-            System.out.println("Fire spawns on bot or button.");
+            //System.out.println("Fire spawns on bot or button.");
             return false;
         }
 
 
-        printShip(ship, bot, button, initialFire);
+        //printShip(ship, bot, button, initialFire);
 
 
-        int t = 0;
-        System.out.println(t);
+        //int t = 0;
+        //System.out.println(t);
         while (!bot.isButton && !bot.getOnFire() && !button.getOnFire()) {
             //BFS Shortest Path from bot -> button
             LinkedList<Cell> shortestPath = Bfs.shortestPathBFS(bot, button);
             if (shortestPath == null) {
-                System.out.println("Shortest Path is null.");
+                //System.out.println("Shortest Path is null.");
                 return false;
             }
             shortestPath.removeFirst();
 
-            System.out.println("t = "+ t + " --> @(" + bot.getRow() + ", " + bot.getCol() + ")");
+            //System.out.println("t = "+ t + " --> @(" + bot.getRow() + ", " + bot.getCol() + ")");
 
             //move the bot
             Cell neighbor = shortestPath.removeFirst();
@@ -175,7 +168,7 @@ public class Main {
             bot = neighbor;
 
             if (bot.isButton) {
-                System.out.println("Bot made it to the button!");
+                //System.out.println("Bot made it to the button!");
                 return true;
             }
             else {
@@ -190,17 +183,29 @@ public class Main {
                 }
 
                 if (bot.getOnFire() || button.getOnFire()) {
-                    System.out.println("The bot or button caught on fire :(");
+                    //System.out.println("The bot or button caught on fire :(");
                     return false;
                 }
             }
-            t++;
+            //t++;
         }
         //if the shortest path is fully traversed and bot didn't reach button, loss
-        System.out.println("Bot never reached button...");
+        //System.out.println("Bot never reached button...");
         return false;
     }
 
+
+
+
+    /**
+     * Try to ignite the given neighbor of a fire cell
+     */
+    private static void tryFireNeighbor(Cell neighbor, LinkedList<Cell> fireCells) {
+        if (neighbor != null && Math.random() <= neighbor.flammability && neighbor.isOpen && !neighbor.getOnFire()) {
+            neighbor.setOnFire(true);
+            fireCells.add(neighbor);
+        }
+    }
 
     /**
      * Run an experiment for Bot 3
@@ -220,7 +225,7 @@ public class Main {
         button.isButton = true;
 
         if (bot.isButton) {
-            System.out.println("Bot spawns on button.");
+            //System.out.println("Bot spawns on button.");
             return true;
         }
 
@@ -232,16 +237,16 @@ public class Main {
         fireCells.add(initialFire);
 
         if (bot.getOnFire() || button.getOnFire()) {
-            System.out.println("Fire spawns on bot or button.");
+            //System.out.println("Fire spawns on bot or button.");
             return false;
         }
 
 
-        printShip(ship, bot, button, initialFire);
+        //printShip(ship, bot, button, initialFire);
 
 
         int t = 0;
-        System.out.println(t);
+        //System.out.println(t);
         while (!bot.isButton && !bot.getOnFire() && !button.getOnFire()) {
             //BFS Shortest Path from bot -> button
             LinkedList<Cell> shortestPath;
@@ -250,12 +255,14 @@ public class Main {
             shortestPath = Bfs.shortestPathBFS_Bot3(bot, button);
             if (shortestPath == null) {
                 //if not possible, do the Bot 2 method
-                System.out.println("Shortest Path is null.");
-                return false;
+                shortestPath = Bfs.shortestPathBFS(bot, button);
+                if (shortestPath == null)
+                    return false;
+                //System.out.println("Shortest Path is null.");
             }
             shortestPath.removeFirst();
 
-            System.out.println("t = "+ t + " --> @(" + bot.getRow() + ", " + bot.getCol() + ")");
+            //System.out.println("t = "+ t + " --> @(" + bot.getRow() + ", " + bot.getCol() + ")");
 
             //move the bot
             Cell neighbor = shortestPath.removeFirst();
@@ -264,7 +271,7 @@ public class Main {
             bot = neighbor;
 
             if (bot.isButton) {
-                System.out.println("Bot made it to the button!");
+                //System.out.println("Bot made it to the button!");
                 return true;
             }
             else {
@@ -279,14 +286,14 @@ public class Main {
                 }
 
                 if (bot.getOnFire() || button.getOnFire()) {
-                    System.out.println("The bot or button caught on fire :(");
+                    //System.out.println("The bot or button caught on fire :(");
                     return false;
                 }
             }
             t++;
         }
         //if the shortest path is fully traversed and bot didn't reach button, loss
-        System.out.println("Bot never reached button...");
+        //System.out.println("Bot never reached button...");
         return false;
     }
 
@@ -320,35 +327,56 @@ public class Main {
     }
 
 
-    private static void runTests(int bot) {
-        for (int test = 0; test < numTests; test++) {
-            System.out.println("CURRENT TEST #: " + test);
+    /**
+     * Run tests on the given bot number
+     * @param bot the bot number
+     * @return the number of total wins
+     */
+    private static int runTests(int bot) {
+        LinkedList<Boolean> testResults = new LinkedList<>();
+        //System.out.println("*********************************************");
+        //System.out.println("Run " + numTests + " tests on Bot " + bot);
+        for (int test = 1; test <= numTests; test++) {
+            //System.out.print("TEST " + test + ": ");
             Cell[][] tempShip = Ship.makeShip();
+            openCells = new ArrayList<>();
             for (int i = 0; i < tempShip.length; i++){
                 for (int j = 0; j < tempShip[0].length; j++){
                     if (tempShip[i][j].isOpen)
                         openCells.add(tempShip[i][j]);
                 }
             }
-            if (bot == 1)
-                testResults.add(runBot1(tempShip));
-            else if (bot == 2)
-                testResults.add(runBot2(tempShip));
-            else if (bot == 3)
-                testResults.add(runBot3(tempShip));
-            System.out.println("\n\n");
+            boolean result = false;
+            if (bot == 1) {
+                result = (runBot1(tempShip));
+                testResults.add(result);
+            }
+            else if (bot == 2) {
+                result = (runBot2(tempShip));
+                testResults.add(result);
+            }
+            else if (bot == 3) {
+                result = (runBot3(tempShip));
+                testResults.add(result);
+            }
+
+            //if (result) System.out.println("PASS"); else System.out.println("FAIL");
         }
         int totalWins = 0;
         for (Boolean result : testResults) {
             if (result)
                 totalWins++;
         }
-        System.out.println("Total Wins: " + totalWins);
+        //System.out.println("q: " + q);
+        //System.out.println("Total Wins: " + totalWins);
+        //System.out.println("*********************************************\n\n");
+        return totalWins;
     }
 
 
     public static void main(String[] args) {
         //Initialize the ship
+        /*
         Cell[][] ship = Ship.makeShip();
         for (int i = 0; i < ship.length; i++){
             for (int j = 0; j < ship[0].length; j++){
@@ -356,23 +384,47 @@ public class Main {
                     openCells.add(ship[i][j]);
             }
         }
-        System.out.println("Initial Cell is at row " + Ship.initial.getRow() +
-                " and col " + Ship.initial.getCol() + "\n\n\n");
+         */
+        //System.out.println("Initial Cell is at row " + Ship.initial.getRow() +
+        //        " and col " + Ship.initial.getCol() + "\n\n\n");
         //System.out.println("0123456789");
-        System.out.println();
+        //System.out.println();
         //printShip();
 
         //BOT 1
-        System.out.println("Did Bot 1 make it to the button? " + runBot1(ship));
+        System.out.println("Bot 1");
+        q = 0.1; runQTests(1);
+        q = 0.25; runQTests(1);
+        q = 0.50; runQTests(1);
+        q = 0.75; runQTests(1);
+        q = 0.9; runQTests(1);
+        System.out.println();
 
         //BOT 2
-        //System.out.println("Did Bot 2 make it to the button? " + runBot2(ship));
+        System.out.println("Bot 2");
+        q = 0.1; runQTests(2);
+        q = 0.25; runQTests(2);
+        q = 0.50; runQTests(2);
+        q = 0.75; runQTests(2);
+        q = 0.9; runQTests(2);
+        System.out.println();
 
         //BOT 3
-        //System.out.println("Did Bot 3 make it to the button? " + runBot3(ship));
+        System.out.println("Bot 3");
+        q = 0.1; runQTests(3);
+        q = 0.25; runQTests(3);
+        q = 0.50; runQTests(3);
+        q = 0.75; runQTests(3);
+        q = 0.9; runQTests(3);
+        System.out.println();
+    }
 
-
-        //Store a bunch of tests (for bot 2)
-        //runTests_Bot2();
+    private static void runQTests(int bot) {
+        int sum = 0;
+        for (int i = 1; i <= numQTests; i++) {
+            sum += runTests(bot);
+        }
+        double avg = sum/numQTests;
+        System.out.println("Avg Success Rate for q = " + q + " is " + avg);
     }
 }

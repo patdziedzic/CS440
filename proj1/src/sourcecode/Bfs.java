@@ -75,6 +75,7 @@ public class Bfs {
         HashMap<Cell, Cell> parentNodes = new HashMap<>(); //keeps track of where bot has visited
         //^ Map the previous to the next by using .put(next, prev)
         Q.add(bot);
+        bot.isVisited = true;
 
         while (!Q.isEmpty()) {
             bot = Q.remove();
@@ -92,28 +93,32 @@ public class Bfs {
                 return shortestPath;
             }
 
-            if(isValid(bot.up)) {
+            if(isValid_Bot3(bot.up)) {
                 parentNodes.put(bot.up, bot); //next, previous
                 Q.add(bot.up);
-                bot.isVisited = true;
+                bot.up.isVisited = true;
             }
-            if(isValid(bot.down)) {
+            if(isValid_Bot3(bot.down)) {
                 parentNodes.put(bot.down, bot);
                 Q.add(bot.down);
+                bot.down.isVisited = true;
             }
-            if(isValid(bot.left)) {
+            if(isValid_Bot3(bot.left)) {
                 parentNodes.put(bot.left, bot);
                 Q.add(bot.left);
+                bot.left.isVisited = true;
             }
-            if(isValid(bot.right)) {
+            if(isValid_Bot3(bot.right)) {
                 parentNodes.put(bot.right, bot);
                 Q.add(bot.right);
+                bot.right.isVisited = true;
             }
         }
         return null;
     }
 
     private static boolean isValid_Bot3(Cell c) {
-        return (c != null && !c.getOnFire() && c.isOpen && !c.isVisited);
+        //also check potential fire neighbors
+        return (c != null && !c.getOnFire() && c.isOpen && !c.isVisited && c.k == 0);
     }
 }

@@ -18,7 +18,7 @@ public class Ship {
                 ship[r][c] = new Cell(r, c);
             }
         }
-        System.out.println("Ship is initialized.");
+        //System.out.println("Ship is initialized.");
 
         //open the initial cell
         int row = Main.rand(0, D-1);
@@ -27,7 +27,7 @@ public class Ship {
         //printShip();
 
         openBlockedCandidates();
-        System.out.println("Dead ends are opening");
+        //System.out.println("Dead ends are opening");
         openDeadEnds();
 
         for (int r = 0; r < D; r++) {
