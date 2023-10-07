@@ -75,18 +75,18 @@ public class Cell {
         return col;
     }
 
-    public void setNeighbors() {
+    public void setNeighbors(Cell[][] ship) {
         try {
-            this.up = Ship.ship[row-1][col];
+            this.up = ship[row-1][col];
         } catch (ArrayIndexOutOfBoundsException ignore){}
         try {
-            this.down = Ship.ship[row+1][col];
+            this.down = ship[row+1][col];
         } catch (ArrayIndexOutOfBoundsException ignore){}
         try {
-            this.left = Ship.ship[row][col-1];
+            this.left = ship[row][col-1];
         } catch (ArrayIndexOutOfBoundsException ignore){}
         try {
-            this.right = Ship.ship[row][col+1];
+            this.right = ship[row][col+1];
         } catch (ArrayIndexOutOfBoundsException ignore){}
     }
 

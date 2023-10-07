@@ -32,7 +32,7 @@ public class Ship {
 
         for (int r = 0; r < D; r++) {
             for (int c = 0; c < D; c++) {
-                ship[r][c].setNeighbors();
+                ship[r][c].setNeighbors(ship);
             }
         }
         
