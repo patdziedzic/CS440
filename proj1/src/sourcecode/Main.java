@@ -248,7 +248,7 @@ public class Main {
         //printShip(ship, bot, button, initialFire);
 
 
-        int t = 0;
+        //int t = 0;
         //System.out.println(t);
         while (!bot.isButton && !bot.getOnFire() && !button.getOnFire()) {
             //BFS Shortest Path from bot -> button
@@ -293,10 +293,172 @@ public class Main {
                     return false;
                 }
             }
-            t++;
+            //t++;
         }
         //if the shortest path is fully traversed and bot didn't reach button, loss
         //System.out.println("Bot never reached button...");
+        return false;
+    }
+
+
+    /**
+     * Runs simulation using bot 3 logic
+     */
+    private static boolean runSimulation_Bot4(Cell bot, Cell button, LinkedList<Cell> fireCells) {
+        while (!bot.isButton && !bot.getOnFire() && !button.getOnFire()) {
+            //BFS Shortest Path from bot -> button
+            LinkedList<Cell> shortestPath;
+
+            //Avoid fire neighbors if possible
+            shortestPath = Bfs.shortestPathBFS_Bot3(bot, button);
+            if (shortestPath == null) {
+                //if not possible, do the Bot 2 method
+                shortestPath = Bfs.shortestPathBFS(bot, button);
+                if (shortestPath == null)
+                    return false;
+                //System.out.println("Shortest Path is null.");
+            }
+            shortestPath.removeFirst();
+
+            //System.out.println("t = "+ t + " --> @(" + bot.getRow() + ", " + bot.getCol() + ")");
+
+            //move the bot
+            Cell neighbor = shortestPath.removeFirst();
+            bot.isBot = false;
+            neighbor.isBot = true;
+            bot = neighbor;
+
+            if (bot.isButton) {
+                //System.out.println("Bot made it to the button!");
+                return true;
+            }
+            else {
+                //else, potentially advance fire
+                LinkedList<Cell> copyFireCells = (LinkedList<Cell>) fireCells.clone();
+                while (!copyFireCells.isEmpty()) {
+                    Cell fireCell = copyFireCells.removeFirst();
+                    tryFireNeighbor(fireCell.up, fireCells);
+                    tryFireNeighbor(fireCell.down, fireCells);
+                    tryFireNeighbor(fireCell.left, fireCells);
+                    tryFireNeighbor(fireCell.right, fireCells);
+                }
+
+                if (bot.getOnFire() || button.getOnFire()) {
+                    //System.out.println("The bot or button caught on fire :(");
+                    return false;
+                }
+            }
+            //t++;
+        }
+        //if the shortest path is fully traversed and bot didn't reach button, loss
+        //System.out.println("Bot never reached button...");
+        return false;
+    }
+
+
+    /**
+     * Run an experiment for Bot 4
+     */
+    private static boolean runBot4(Cell[][] ship) {
+        //initialize the bot
+        int randIndex = Main.rand(0, openCells.size() - 1);
+        Cell bot = openCells.get(randIndex);
+        bot.isBot = true;
+
+        //initialize the button
+        randIndex = Main.rand(0, openCells.size() - 1);
+        Cell button = openCells.get(randIndex);
+        button.isButton = true;
+
+        if (bot.isButton) {
+            return true;
+        }
+
+        //initialize the fire
+        LinkedList<Cell> fireCells = new LinkedList<>();
+        randIndex = Main.rand(0, openCells.size() - 1);
+        Cell initialFire = openCells.get(randIndex);
+        initialFire.setOnFire(true); //setting on fire automatically updates neighbors
+        fireCells.add(initialFire);
+
+        if (bot.getOnFire() || button.getOnFire()) {
+            return false;
+        }
+
+        int t = 0;
+        while (!bot.isButton && !bot.getOnFire() && !button.getOnFire()) {
+            t++;
+            int[] wins = new int[4]; //0 up, 1 down, 2 left, 3 right
+
+            int runs = 4;
+            for (int i = 0; i < runs; i++) {
+                if (bot.up != null && bot.down != null && bot.left != null && bot.right != null) {
+                    if (runSimulation_Bot4(bot.up, button, fireCells))
+                        wins[0]++;
+                    if (runSimulation_Bot4(bot.down, button, fireCells))
+                        wins[1]++;
+                    if (runSimulation_Bot4(bot.left, button, fireCells))
+                        wins[2]++;
+                    if (runSimulation_Bot4(bot.right, button, fireCells))
+                        wins[3]++;
+                }
+            }
+
+            System.out.println("time t = " + t);
+            int indexOfMax = 0;
+            int max = wins[0];
+            for (int i = 1; i < wins.length; i++) {
+                if (max < wins[i]) {
+                    max = wins[i];
+                    indexOfMax = i;
+                }
+            }
+
+            try {
+                if (indexOfMax == 0) {
+                    bot.isBot = false;
+                    bot.up.isBot = true;
+                    bot = bot.up;
+                }
+            } catch (NullPointerException ignore) { }
+            try {
+                if (indexOfMax == 1) {
+                    bot.isBot = false;
+                    bot.down.isBot = true;
+                    bot = bot.down;
+                }
+            } catch (NullPointerException ignore) { }
+            try {
+                if (indexOfMax == 2) {
+                    bot.isBot = false;
+                    bot.left.isBot = true;
+                    bot = bot.left;
+                }
+            } catch (NullPointerException ignore) { }
+            try {
+                bot.isBot = false;
+                bot.right.isBot = true;
+                bot = bot.right;
+            } catch (NullPointerException ignore) { }
+
+            if (bot.isButton) {
+                return true;
+            } else {
+                //else, potentially advance fire
+                LinkedList<Cell> copyFireCells = (LinkedList<Cell>) fireCells.clone();
+                while (!copyFireCells.isEmpty()) {
+                    Cell fireCell = copyFireCells.removeFirst();
+                    tryFireNeighbor(fireCell.up, fireCells);
+                    tryFireNeighbor(fireCell.down, fireCells);
+                    tryFireNeighbor(fireCell.left, fireCells);
+                    tryFireNeighbor(fireCell.right, fireCells);
+                }
+
+                if (bot.getOnFire() || button.getOnFire()) {
+                    return false;
+                }
+            }
+        }
         return false;
     }
 
@@ -379,7 +541,7 @@ public class Main {
 
     public static void main(String[] args) {
         //Initialize the ship
-        /*
+
         Cell[][] ship = Ship.makeShip();
         for (int i = 0; i < ship.length; i++){
             for (int j = 0; j < ship[0].length; j++){
@@ -387,13 +549,14 @@ public class Main {
                     openCells.add(ship[i][j]);
             }
         }
-         */
+
         //System.out.println("Initial Cell is at row " + Ship.initial.getRow() +
         //        " and col " + Ship.initial.getCol() + "\n\n\n");
         //System.out.println("0123456789");
         //System.out.println();
         //printShip();
 
+        /*
         //BOT 1
         System.out.println("Bot 1");
         q = 0.1; runQTests(1);
@@ -420,6 +583,8 @@ public class Main {
         q = 0.75; runQTests(3);
         q = 0.9; runQTests(3);
         System.out.println();
+         */
+        System.out.println("Bot 4 output: " + runBot4(ship));
     }
 
     private static void runQTests(int bot) {
