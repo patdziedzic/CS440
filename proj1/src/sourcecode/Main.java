@@ -6,7 +6,7 @@ import java.util.LinkedList;
 public class Main {
     public static double q;
     private static final int numTests = 100;
-    private static final double numQTests = 5.0;
+    private static final double numQTests = 1.0;
     private static ArrayList<Cell> openCells = new ArrayList<>();
 
 
@@ -35,7 +35,7 @@ public class Main {
      * @param ship the ship to run the experiment on
      * @return true if the bot made it to the button
      */
-    private static boolean runBot1(Cell[][] ship) {
+    private static Boolean runBot1(Cell[][] ship) {
         //initialize the bot
         int randIndex = Main.rand(0, openCells.size()-1);
         Cell bot = openCells.get(randIndex);
@@ -48,7 +48,7 @@ public class Main {
 
         if (bot.isButton) {
             //System.out.println("Bot spawns on button.");
-            return true;
+            return null;
         }
 
         //initialize the fire
@@ -60,12 +60,12 @@ public class Main {
 
         if (bot.getOnFire() || button.getOnFire()) {
             //System.out.println("Fire spawns on bot or button.");
-            return false;
+            return null;
         }
 
         //If the bot is closer than the fire, it will definitely win. Return true.
         if(checkDistBotVsFire(bot, initialFire, button, ship))
-            return true;
+            return null;
 
         //printShip(ship, bot, button, initialFire);
 
@@ -73,7 +73,7 @@ public class Main {
         LinkedList<Cell> shortestPath = Bfs.shortestPathBFS(bot, button, ship);
         if (shortestPath == null) {
             //System.out.println("Shortest Path is null.");
-            return false;
+            return null;
         }
 
         shortestPath.removeFirst();
@@ -111,7 +111,7 @@ public class Main {
         }
         //if the shortest path is fully traversed and bot didn't reach button, loss
         //System.out.println("Bot never reached button...");
-        return false;
+        return null;
     }
 
     /**
@@ -119,7 +119,7 @@ public class Main {
      * @param ship the ship to run the experiment on
      * @return true if the bot made it to the button
      */
-    private static boolean runBot2(Cell[][] ship) {
+    private static Boolean runBot2(Cell[][] ship) {
         //initialize the bot
         int randIndex = Main.rand(0, openCells.size()-1);
         Cell bot = openCells.get(randIndex);
@@ -132,7 +132,7 @@ public class Main {
 
         if (bot.isButton) {
             //System.out.println("Bot spawns on button.");
-            return true;
+            return null;
         }
 
         //initialize the fire
@@ -144,9 +144,12 @@ public class Main {
 
         if (bot.getOnFire() || button.getOnFire()) {
             //System.out.println("Fire spawns on bot or button.");
-            return false;
+            return null;
         }
 
+        //If the bot is closer than the fire, it will definitely win. Return true.
+        if(checkDistBotVsFire(bot, initialFire, button, ship))
+            return null;
 
         //printShip(ship, bot, button, initialFire);
 
@@ -194,7 +197,7 @@ public class Main {
         }
         //if the shortest path is fully traversed and bot didn't reach button, loss
         //System.out.println("Bot never reached button...");
-        return false;
+        return null;
     }
 
 
@@ -216,7 +219,7 @@ public class Main {
      * @param ship the ship to run the experiment on
      * @return true if the bot made it to the button
      */
-    private static boolean runBot3(Cell[][] ship) {
+    private static Boolean runBot3(Cell[][] ship) {
         //initialize the bot
         int randIndex = Main.rand(0, openCells.size()-1);
         Cell bot = openCells.get(randIndex);
@@ -229,7 +232,7 @@ public class Main {
 
         if (bot.isButton) {
             //System.out.println("Bot spawns on button.");
-            return true;
+            return null;
         }
 
         //initialize the fire
@@ -241,9 +244,12 @@ public class Main {
 
         if (bot.getOnFire() || button.getOnFire()) {
             //System.out.println("Fire spawns on bot or button.");
-            return false;
+            return null;
         }
 
+        //If the bot is closer than the fire, it will definitely win. Return true.
+        if(checkDistBotVsFire(bot, initialFire, button, ship))
+            return null;
 
         //printShip(ship, bot, button, initialFire);
 
@@ -297,7 +303,7 @@ public class Main {
         }
         //if the shortest path is fully traversed and bot didn't reach button, loss
         //System.out.println("Bot never reached button...");
-        return false;
+        return null;
     }
 
 
@@ -592,17 +598,20 @@ public class Main {
                         openCells.add(tempShip[i][j]);
                 }
             }
-            boolean result = false;
+            Boolean result = false;
             if (bot == 1) {
                 result = (runBot1(tempShip));
-                testResults.add(result);
             }
             else if (bot == 2) {
                 result = (runBot2(tempShip));
-                testResults.add(result);
             }
             else if (bot == 3) {
                 result = (runBot3(tempShip));
+            }
+
+            if (result == null) //if null, forget this test (bot just got lucky)
+                test--;
+            else {
                 testResults.add(result);
             }
 
@@ -637,7 +646,7 @@ public class Main {
         //System.out.println();
         //printShip();
 
-        /* 
+
         //BOT 1
         System.out.println("Bot 1");
         q = 0.1; runQTests(1);
@@ -665,9 +674,9 @@ public class Main {
         q = 0.75; runQTests(3);
         q = 0.9; runQTests(3);
         System.out.println();
-        */
+
         q = 0;
-        System.out.println("Bot 4 output: " + runBot4(ship));
+        //System.out.println("Bot 4 output: " + runBot4(ship));
     }
 
     private static void runQTests(int bot) {
