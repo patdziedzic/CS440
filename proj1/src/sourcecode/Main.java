@@ -385,6 +385,8 @@ public class Main {
             return false;
         }
 
+        printShip(ship, bot, button, initialFire);
+
         int t = 0;
         while (!bot.isButton && !bot.getOnFire() && !button.getOnFire()) {
             t++;
@@ -392,19 +394,53 @@ public class Main {
 
             int runs = 4;
             for (int i = 0; i < runs; i++) {
-                if (bot.up != null && bot.down != null && bot.left != null && bot.right != null) {
-                    if (runSimulation_Bot4(bot.up, button, fireCells))
+                if (bot.up != null) {
+                    Cell[][] tempShip = copyShip(ship);
+                    Cell tempBot = tempShip[bot.up.getRow()][bot.up.getCol()];
+                    Cell tempButton = tempShip[button.getRow()][button.getCol()];
+                    LinkedList<Cell> tempFireCells = new LinkedList<>();
+                    for (Cell fireCell : fireCells) {
+                        tempFireCells.add(tempShip[fireCell.getRow()][fireCell.getCol()]);
+                    }
+                    if (runSimulation_Bot4(tempBot, tempButton, tempFireCells))
                         wins[0]++;
-                    if (runSimulation_Bot4(bot.down, button, fireCells))
+                }
+                if (bot.down != null) {
+                    Cell[][] tempShip = copyShip(ship);
+                    Cell tempBot = tempShip[bot.down.getRow()][bot.down.getCol()];
+                    Cell tempButton = tempShip[button.getRow()][button.getCol()];
+                    LinkedList<Cell> tempFireCells = new LinkedList<>();
+                    for (Cell fireCell : fireCells) {
+                        tempFireCells.add(tempShip[fireCell.getRow()][fireCell.getCol()]);
+                    }
+                    if (runSimulation_Bot4(tempBot, tempButton, tempFireCells))
                         wins[1]++;
-                    if (runSimulation_Bot4(bot.left, button, fireCells))
+                }
+                if (bot.left != null) {
+                    Cell[][] tempShip = copyShip(ship);
+                    Cell tempBot = tempShip[bot.left.getRow()][bot.left.getCol()];
+                    Cell tempButton = tempShip[button.getRow()][button.getCol()];
+                    LinkedList<Cell> tempFireCells = new LinkedList<>();
+                    for (Cell fireCell : fireCells) {
+                        tempFireCells.add(tempShip[fireCell.getRow()][fireCell.getCol()]);
+                    }
+                    if (runSimulation_Bot4(tempBot, tempButton, tempFireCells))
                         wins[2]++;
-                    if (runSimulation_Bot4(bot.right, button, fireCells))
+                }
+                if (bot.right != null) {
+                    Cell[][] tempShip = copyShip(ship);
+                    Cell tempBot = tempShip[bot.right.getRow()][bot.right.getCol()];
+                    Cell tempButton = tempShip[button.getRow()][button.getCol()];
+                    LinkedList<Cell> tempFireCells = new LinkedList<>();
+                    for (Cell fireCell : fireCells) {
+                        tempFireCells.add(tempShip[fireCell.getRow()][fireCell.getCol()]);
+                    }
+                    if (runSimulation_Bot4(tempBot, tempButton, tempFireCells))
                         wins[3]++;
                 }
             }
 
-            System.out.println("time t = " + t);
+            System.out.println("time t = " + t + "   BOT POSITION: " + "(" + bot.getRow() + ", " + bot.getCol() + ")");
             int indexOfMax = 0;
             int max = wins[0];
             for (int i = 1; i < wins.length; i++) {
@@ -414,32 +450,36 @@ public class Main {
                 }
             }
 
-            try {
-                if (indexOfMax == 0) {
+
+            if (indexOfMax == 0) {
+                try {
                     bot.isBot = false;
                     bot.up.isBot = true;
                     bot = bot.up;
-                }
-            } catch (NullPointerException ignore) { }
-            try {
-                if (indexOfMax == 1) {
+                } catch (NullPointerException ignore) { }
+            }
+            else if (indexOfMax == 1) {
+                try {
                     bot.isBot = false;
                     bot.down.isBot = true;
                     bot = bot.down;
-                }
-            } catch (NullPointerException ignore) { }
-            try {
-                if (indexOfMax == 2) {
+                } catch (NullPointerException ignore) { }
+            }
+            else if (indexOfMax == 2) {
+                try {
                     bot.isBot = false;
                     bot.left.isBot = true;
                     bot = bot.left;
-                }
-            } catch (NullPointerException ignore) { }
-            try {
-                bot.isBot = false;
-                bot.right.isBot = true;
-                bot = bot.right;
-            } catch (NullPointerException ignore) { }
+                } catch (NullPointerException ignore) { }
+            }
+            else {
+                try {
+                    bot.isBot = false;
+                    bot.right.isBot = true;
+                    bot = bot.right;
+                } catch (NullPointerException ignore) { }
+            }
+
 
             if (bot.isButton) {
                 return true;
@@ -454,7 +494,12 @@ public class Main {
                     tryFireNeighbor(fireCell.right, fireCells);
                 }
 
-                if (bot.getOnFire() || button.getOnFire()) {
+                if (bot.getOnFire()) {
+                    System.out.println("bot on fire");
+                    return false;
+                }
+                if (button.getOnFire()) {
+                    System.out.println("button on fire");
                     return false;
                 }
             }
@@ -462,6 +507,23 @@ public class Main {
         return false;
     }
 
+    /**
+     * Deep copy of given ship
+     */
+    private static Cell[][] copyShip(Cell[][] ship) {
+        Cell[][] newShip = new Cell[Ship.D][Ship.D];
+        for (int i = 0; i < ship.length; i++){
+            for (int j = 0; j < ship[0].length; j++){
+                newShip[i][j] = new Cell(ship[i][j]);
+            }
+        }
+        for (int r = 0; r < Ship.D; r++) {
+            for (int c = 0; c < Ship.D; c++) {
+                ship[r][c].setNeighbors();
+            }
+        }
+        return newShip;
+    }
 
     /**
      * Print the ship
@@ -584,6 +646,7 @@ public class Main {
         q = 0.9; runQTests(3);
         System.out.println();
          */
+        q = 0.1;
         System.out.println("Bot 4 output: " + runBot4(ship));
     }
 

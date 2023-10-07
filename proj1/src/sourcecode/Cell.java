@@ -2,8 +2,8 @@ package sourcecode;
 
 public class Cell {
     //COORDINATES
-    private final int row;
-    private final int col;
+    private int row;
+    private int col;
 
     //REGARDING OPENNESS
     public int numOpenNeighbors; //increment for each new open neighbor
@@ -39,6 +39,28 @@ public class Cell {
         this.isBot = false;
         this.isButton = false;
         this.isVisited = false;
+    }
+
+    /**
+     * Copy the given Cell
+     */
+    public Cell(Cell cell) {
+        if (cell != null) {
+            this.row = cell.getRow();
+            this.col = cell.getCol();
+            this.numOpenNeighbors = cell.numOpenNeighbors;
+            this.isOpen = cell.isOpen;
+            this.up = null;
+            this.down = null;
+            this.left = null;
+            this.right = null;
+            this.isVisited = cell.isVisited;
+            this.isBot = cell.isBot;
+            this.isButton = cell.isButton;
+            this.onFire = cell.getOnFire();
+            this.flammability = cell.flammability;
+            this.k = cell.k;
+        }
     }
 
     public void incNumOpenNeighbors() {
