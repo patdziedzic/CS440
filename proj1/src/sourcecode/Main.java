@@ -6,7 +6,7 @@ import java.util.LinkedList;
 public class Main {
     public static double q;
     private static final int numTests = 100;
-    private static final double numQTests = 10.0;
+    private static final double numQTests = 5.0;
     private static ArrayList<Cell> openCells = new ArrayList<>();
 
 
@@ -64,13 +64,13 @@ public class Main {
         }
 
         //If the bot is closer than the fire, it will definitely win. Return true.
-        if(checkDistBotVsFire(bot, initialFire, button))
+        if(checkDistBotVsFire(bot, initialFire, button, ship))
             return true;
 
         //printShip(ship, bot, button, initialFire);
 
         //BFS Shortest Path from bot -> button
-        LinkedList<Cell> shortestPath = Bfs.shortestPathBFS(bot, button);
+        LinkedList<Cell> shortestPath = Bfs.shortestPathBFS(bot, button, ship);
         if (shortestPath == null) {
             //System.out.println("Shortest Path is null.");
             return false;
@@ -155,7 +155,7 @@ public class Main {
         //System.out.println(t);
         while (!bot.isButton && !bot.getOnFire() && !button.getOnFire()) {
             //BFS Shortest Path from bot -> button
-            LinkedList<Cell> shortestPath = Bfs.shortestPathBFS(bot, button);
+            LinkedList<Cell> shortestPath = Bfs.shortestPathBFS(bot, button, ship);
             if (shortestPath == null) {
                 //System.out.println("Shortest Path is null.");
                 return false;
@@ -255,10 +255,10 @@ public class Main {
             LinkedList<Cell> shortestPath;
 
             //Avoid fire neighbors if possible
-            shortestPath = Bfs.shortestPathBFS_Bot3(bot, button);
+            shortestPath = Bfs.shortestPathBFS_Bot3(bot, button, ship);
             if (shortestPath == null) {
                 //if not possible, do the Bot 2 method
-                shortestPath = Bfs.shortestPathBFS(bot, button);
+                shortestPath = Bfs.shortestPathBFS(bot, button, ship);
                 if (shortestPath == null)
                     return false;
                 //System.out.println("Shortest Path is null.");
@@ -304,21 +304,21 @@ public class Main {
     /**
      * Runs simulation using bot 3 logic
      */
-    private static boolean runSimulation_Bot4(Cell bot, Cell button, LinkedList<Cell> fireCells) {
+    private static boolean runSimulation_Bot4(Cell bot, Cell button, LinkedList<Cell> fireCells, Cell[][] ship) {
         while (!bot.isButton && !bot.getOnFire() && !button.getOnFire()) {
             //BFS Shortest Path from bot -> button
             LinkedList<Cell> shortestPath;
 
             //Avoid fire neighbors if possible
-            shortestPath = Bfs.shortestPathBFS_Bot3(bot, button);
+            shortestPath = Bfs.shortestPathBFS_Bot3(bot, button, ship);
             if (shortestPath == null) {
                 //if not possible, do the Bot 2 method
-                shortestPath = Bfs.shortestPathBFS(bot, button);
+                shortestPath = Bfs.shortestPathBFS(bot, button, ship);
                 if (shortestPath == null)
                     return false;
                 //System.out.println("Shortest Path is null.");
             }
-            shortestPath.removeFirst();
+            //shortestPath.removeFirst();
 
             //System.out.println("t = "+ t + " --> @(" + bot.getRow() + ", " + bot.getCol() + ")");
 
@@ -394,7 +394,7 @@ public class Main {
 
             int runs = 4;
             for (int i = 0; i < runs; i++) {
-                if (bot.up != null) {
+                if (bot.up != null && bot.up.isOpen) {
                     Cell[][] tempShip = copyShip(ship);
                     Cell tempBot = tempShip[bot.up.getRow()][bot.up.getCol()];
                     Cell tempButton = tempShip[button.getRow()][button.getCol()];
@@ -402,10 +402,10 @@ public class Main {
                     for (Cell fireCell : fireCells) {
                         tempFireCells.add(tempShip[fireCell.getRow()][fireCell.getCol()]);
                     }
-                    if (runSimulation_Bot4(tempBot, tempButton, tempFireCells))
+                    if (runSimulation_Bot4(tempBot, tempButton, tempFireCells, tempShip))
                         wins[0]++;
                 }
-                if (bot.down != null) {
+                if (bot.down != null && bot.down.isOpen) {
                     Cell[][] tempShip = copyShip(ship);
                     Cell tempBot = tempShip[bot.down.getRow()][bot.down.getCol()];
                     Cell tempButton = tempShip[button.getRow()][button.getCol()];
@@ -413,10 +413,10 @@ public class Main {
                     for (Cell fireCell : fireCells) {
                         tempFireCells.add(tempShip[fireCell.getRow()][fireCell.getCol()]);
                     }
-                    if (runSimulation_Bot4(tempBot, tempButton, tempFireCells))
+                    if (runSimulation_Bot4(tempBot, tempButton, tempFireCells, tempShip))
                         wins[1]++;
                 }
-                if (bot.left != null) {
+                if (bot.left != null && bot.left.isOpen) {
                     Cell[][] tempShip = copyShip(ship);
                     Cell tempBot = tempShip[bot.left.getRow()][bot.left.getCol()];
                     Cell tempButton = tempShip[button.getRow()][button.getCol()];
@@ -424,10 +424,10 @@ public class Main {
                     for (Cell fireCell : fireCells) {
                         tempFireCells.add(tempShip[fireCell.getRow()][fireCell.getCol()]);
                     }
-                    if (runSimulation_Bot4(tempBot, tempButton, tempFireCells))
+                    if (runSimulation_Bot4(tempBot, tempButton, tempFireCells, tempShip))
                         wins[2]++;
                 }
-                if (bot.right != null) {
+                if (bot.right != null && bot.right.isOpen) {
                     Cell[][] tempShip = copyShip(ship);
                     Cell tempBot = tempShip[bot.right.getRow()][bot.right.getCol()];
                     Cell tempButton = tempShip[button.getRow()][button.getCol()];
@@ -435,7 +435,7 @@ public class Main {
                     for (Cell fireCell : fireCells) {
                         tempFireCells.add(tempShip[fireCell.getRow()][fireCell.getCol()]);
                     }
-                    if (runSimulation_Bot4(tempBot, tempButton, tempFireCells))
+                    if (runSimulation_Bot4(tempBot, tempButton, tempFireCells, tempShip))
                         wins[3]++;
                 }
             }
@@ -443,36 +443,55 @@ public class Main {
             System.out.println("time t = " + t + "   BOT POSITION: " + "(" + bot.getRow() + ", " + bot.getCol() + ")");
             int indexOfMax = 0;
             int max = wins[0];
-            for (int i = 1; i < wins.length; i++) {
-                if (max < wins[i]) {
-                    max = wins[i];
-                    indexOfMax = i;
+            /*if(wins[0] > 0 || wins[1] > 0 || wins[2] > 0 || wins[3] > 0){
+                for (int i = 1; i < wins.length; i++) {
+                    if (max < wins[i] && ) {
+                        max = wins[i];
+                        indexOfMax = i;
+                    }
                 }
+            }*/
+
+            if(bot.up != null && bot.up.isOpen && max < wins[0]) {
+                max = wins[0];
+                indexOfMax = 0;
+            }
+            if(bot.down != null && bot.down.isOpen && max < wins[1]) {
+                max = wins[1];
+                indexOfMax = 1;
+            }
+            if(bot.left != null && bot.left.isOpen && max < wins[2]) {
+                max = wins[2];
+                indexOfMax = 2;
+            }
+            if(bot.right != null && bot.right.isOpen && max < wins[3]) {
+                max = wins[3];
+                indexOfMax = 3;
             }
 
 
-            if (indexOfMax == 0) {
+            if (bot.up != null && indexOfMax == 0 && bot.up.isOpen) {
                 try {
                     bot.isBot = false;
                     bot.up.isBot = true;
                     bot = bot.up;
                 } catch (NullPointerException ignore) { }
             }
-            else if (indexOfMax == 1) {
+            else if (bot.down != null && indexOfMax == 1 && bot.down.isOpen) {
                 try {
                     bot.isBot = false;
                     bot.down.isBot = true;
                     bot = bot.down;
                 } catch (NullPointerException ignore) { }
             }
-            else if (indexOfMax == 2) {
+            else if (bot.left != null && indexOfMax == 2 && bot.left.isOpen) {
                 try {
                     bot.isBot = false;
                     bot.left.isBot = true;
                     bot = bot.left;
                 } catch (NullPointerException ignore) { }
             }
-            else {
+            else if (bot.right != null && indexOfMax == 3 && bot.right.isOpen){
                 try {
                     bot.isBot = false;
                     bot.right.isBot = true;
@@ -519,7 +538,7 @@ public class Main {
         }
         for (int r = 0; r < Ship.D; r++) {
             for (int c = 0; c < Ship.D; c++) {
-                ship[r][c].setNeighbors();
+                newShip[r][c].setNeighbors();
             }
         }
         return newShip;
@@ -618,7 +637,7 @@ public class Main {
         //System.out.println();
         //printShip();
 
-        /*
+        /* 
         //BOT 1
         System.out.println("Bot 1");
         q = 0.1; runQTests(1);
@@ -636,7 +655,8 @@ public class Main {
         q = 0.75; runQTests(2);
         q = 0.9; runQTests(2);
         System.out.println();
-
+        
+        
         //BOT 3
         System.out.println("Bot 3");
         q = 0.1; runQTests(3);
@@ -645,8 +665,8 @@ public class Main {
         q = 0.75; runQTests(3);
         q = 0.9; runQTests(3);
         System.out.println();
-         */
-        q = 0.1;
+        */
+        q = 0;
         System.out.println("Bot 4 output: " + runBot4(ship));
     }
 
@@ -663,11 +683,11 @@ public class Main {
      * Check the distance from bot to button and fire to button.
      * @return true if the bot is closer to the button than the fire
      */
-    private static boolean checkDistBotVsFire(Cell bot, Cell fire, Cell button) {
+    private static boolean checkDistBotVsFire(Cell bot, Cell fire, Cell button, Cell[][] ship) {
         //BFS Shortest Path from bot -> button
-        LinkedList<Cell> shortestPath_Bot = Bfs.shortestPathBFS(bot, button);
+        LinkedList<Cell> shortestPath_Bot = Bfs.shortestPathBFS(bot, button, ship);
         //BFS Shortest Path from fire -> button
-        LinkedList<Cell> shortestPath_Fire = Bfs.shortestPathBFS(fire, button);
+        LinkedList<Cell> shortestPath_Fire = Bfs.shortestPathBFS(fire, button, ship);
         try {
             return shortestPath_Bot.size() <= shortestPath_Fire.size();
         }

@@ -4,11 +4,11 @@ import java.util.*;
 
 public class Bfs {
 
-    public static LinkedList<Cell> shortestPathBFS(Cell bot, Cell button){
+    public static LinkedList<Cell> shortestPathBFS(Cell bot, Cell button, Cell[][] ship){
         //make sure isVisited is false for all cells
         for (int r = 0; r < Ship.D; r++) {
             for (int c = 0; c < Ship.D; c++) {
-                Ship.ship[r][c].isVisited = false;
+                ship[r][c].isVisited = false;
             }
         }
 
@@ -63,11 +63,11 @@ public class Bfs {
     }
 
 
-    public static LinkedList<Cell> shortestPathBFS_Bot3(Cell bot, Cell button){
+    public static LinkedList<Cell> shortestPathBFS_Bot3(Cell bot, Cell button, Cell[][] ship){
         //make sure isVisited is false for all cells
         for (int r = 0; r < Ship.D; r++) {
             for (int c = 0; c < Ship.D; c++) {
-                Ship.ship[r][c].isVisited = false;
+                ship[r][c].isVisited = false;
             }
         }
 
