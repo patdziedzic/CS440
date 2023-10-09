@@ -623,6 +623,7 @@ public class Main {
 
         printShip(ship, bot, button, initialFire);
 
+        Cell prev = bot;
         int t = 0;
         while (!bot.isButton && !bot.getOnFire() && !button.getOnFire()) {
             t++;
@@ -630,19 +631,27 @@ public class Main {
 
             for (int i = 1; i <= 10; i++) {
                 if (bot.up != null && bot.up.isOpen) {
-                    if (runSimulation_Bot4(bot.up, button, fireCells, ship))
+                    if (bot.up.equals(prev))
+                        wins[0] = -1;
+                    else if (runSimulation_Bot4(bot.up, button, fireCells, ship))
                         wins[0]++;
                 }
                 if (bot.down != null && bot.down.isOpen) {
-                    if (runSimulation_Bot4(bot.down, button, fireCells, ship))
+                    if (bot.down.equals(prev))
+                        wins[1] = -1;
+                    else if (runSimulation_Bot4(bot.down, button, fireCells, ship))
                         wins[1]++;
                 }
                 if (bot.left != null && bot.left.isOpen) {
-                    if (runSimulation_Bot4(bot.left, button, fireCells, ship))
+                    if (bot.left.equals(prev))
+                        wins[2] = -1;
+                    else if (runSimulation_Bot4(bot.left, button, fireCells, ship))
                         wins[2]++;
                 }
                 if (bot.right != null && bot.right.isOpen) {
-                    if (runSimulation_Bot4(bot.right, button, fireCells, ship))
+                    if (bot.right.equals(prev))
+                        wins[3] = -1;
+                    else if (runSimulation_Bot4(bot.right, button, fireCells, ship))
                         wins[3]++;
                 }
             }
@@ -672,6 +681,7 @@ public class Main {
             }
 
             //decide where to move the bot
+            prev = bot;
             if (maxNeighbors.size() == 1) {
                 bot.isBot = false;
                 Cell neighbor;
@@ -684,11 +694,30 @@ public class Main {
                 neighbor.isBot = true;
                 bot = neighbor;
             }
-            else {
-                //get the shortest paths of all the bots in the hashmap
-                for ()
-            }
+            else if (maxNeighbors.size() > 1) {
+                //get the shortest paths of all the bots to do a tiebreaker
+                LinkedList<MaxNeighbor> compareThese = new LinkedList<>();
+                for (Cell neighbor : maxNeighbors) {
+                    Integer size = Bfs.shortestPathBFS(neighbor, button, ship).size();
+                    MaxNeighbor mn = new MaxNeighbor(neighbor, size);
+                    compareThese.add(mn);
+                }
 
+                MaxNeighbor theChosenOne = compareThese.removeFirst();
+                for (MaxNeighbor mn : compareThese) {
+                    if (theChosenOne.sizeOfSP < mn.sizeOfSP)
+                        theChosenOne = mn;
+                }
+
+                //move the bot
+                bot.isBot = false;
+                theChosenOne.neighbor.isBot = true;
+                bot = theChosenOne.neighbor;
+            }
+            else {
+                System.out.println("how did we get here (dead end?)");
+                //^ will look at shortest path for dead end starting from there which shouldn't be possible
+            }
 
 
             System.out.println("Has the bot moved?: " + "(" + bot.getRow() + ", " + bot.getCol() + ")");
@@ -863,7 +892,7 @@ public class Main {
         System.out.println();
          */
 
-        q = 0;
+        q = 0.5;
         System.out.println("Bot 4 output: " + runBot4(ship));
     }
 
