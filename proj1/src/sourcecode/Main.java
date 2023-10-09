@@ -657,9 +657,9 @@ public class Main {
         int t = 0;
         while (!pq.isEmpty()) {
             t++;
-            System.out.println("time " + t + " with PQ Size: " + pq.size());
+            //System.out.println("time " + t + " with PQ Size: " + pq.size());
             Cell curr = pq.remove().cell;
-
+            //System.out.println(curr.getRow() + ", "  + curr.getCol());
             if (curr.isButton) {
                 return child;
             }
@@ -670,6 +670,9 @@ public class Main {
                     if (!distTo.containsKey(neighbor) || tempDist < distTo.get(neighbor)) {
                         distTo.put(neighbor, tempDist);
                         child.put(curr, neighbor);
+                        if (neighbor.isButton) {
+                            return child;
+                        }
                         int d = h(neighbor, button, fireCells, ship);
                         if (d != Integer.MAX_VALUE)
                             pq.add(new PQCell(neighbor, distTo.get(neighbor) + d));
@@ -828,7 +831,7 @@ public class Main {
         System.out.println();
          */
 
-        q = 0;
+        q = 0.5;
         System.out.println("Bot 4 output: " + runBot4(ship));
     }
 
