@@ -605,9 +605,10 @@ public class Main {
 
 
         int t = 0;
+        Cell prev = bot;
         while (!bot.isButton && !bot.getOnFire() && !button.getOnFire()) {
             t++;
-            HashMap<Cell, Cell> optimalPath = getOptimalPath(bot, button, fireCells, ship);
+            HashMap<Cell, Cell> optimalPath = getOptimalPath(bot, button, fireCells, ship, prev);
             if (optimalPath == null) {
                 System.out.println("Optimal Path is null.");
                 return false;
@@ -617,6 +618,7 @@ public class Main {
             Cell neighbor = optimalPath.get(bot);
             bot.isBot = false;
             neighbor.isBot = true;
+            prev = bot;
             bot = neighbor;
             System.out.println("Has the bot moved?: " + "(" + bot.getRow() + ", " + bot.getCol() + ")");
 
@@ -645,7 +647,7 @@ public class Main {
     }
 
 
-    private static HashMap<Cell, Cell> getOptimalPath(Cell bot, Cell button, LinkedList<Cell> fireCells, Cell[][] ship) {
+    private static HashMap<Cell, Cell> getOptimalPath(Cell bot, Cell button, LinkedList<Cell> fireCells, Cell[][] ship, Cell prev) {
         //PriorityQueue<PQCell> pq = new PriorityQueue<>(new PQCellComparator());
         PriorityQueue<PQCell> pq = new PriorityQueue<>();
         HashMap<Cell, Integer> distTo = new HashMap<>(); //key: curr, value: distance from bot to curr
@@ -665,7 +667,7 @@ public class Main {
             }
 
             for (Cell neighbor : curr.neighbors) {
-                if (neighbor != null && neighbor.isOpen && !neighbor.getOnFire()) {
+                if (neighbor != null && Bfs.shortestPathBFS_Bot4(bot, neighbor, button, ship) != null && neighbor.isOpen && !neighbor.getOnFire()) {
                     int tempDist = distTo.get(curr) + 1;
                     if (!distTo.containsKey(neighbor) || tempDist < distTo.get(neighbor)) {
                         distTo.put(neighbor, tempDist);
@@ -831,7 +833,7 @@ public class Main {
         System.out.println();
          */
 
-        q = 0.5;
+        q = 0;
         System.out.println("Bot 4 output: " + runBot4(ship));
     }
 
