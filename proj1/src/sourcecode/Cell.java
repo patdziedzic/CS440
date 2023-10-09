@@ -1,5 +1,7 @@
 package sourcecode;
 
+import java.util.LinkedList;
+
 public class Cell {
     //COORDINATES
     private int row;
@@ -14,6 +16,7 @@ public class Cell {
     public Cell down;
     public Cell left;
     public Cell right;
+    public LinkedList<Cell> neighbors;
     public boolean isVisited;
 
     //IDENTITY
@@ -33,6 +36,7 @@ public class Cell {
         this.col = col;
         this.numOpenNeighbors = 0;
         this.isOpen = false;
+        this.neighbors = new LinkedList<>();
         this.onFire = false;
         this.k = 0;
         this.flammability = 1-Math.pow((1-Main.q),k);
@@ -54,6 +58,7 @@ public class Cell {
             this.down = null;
             this.left = null;
             this.right = null;
+            this.neighbors = new LinkedList<>();
             this.isVisited = cell.isVisited;
             this.isBot = cell.isBot;
             this.isButton = cell.isButton;
@@ -77,16 +82,20 @@ public class Cell {
 
     public void setNeighbors(Cell[][] ship) {
         try {
-            this.up = ship[row-1][col];
+            up = ship[row-1][col];
+            if (up != null) neighbors.add(up);
         } catch (ArrayIndexOutOfBoundsException ignore){}
         try {
-            this.down = ship[row+1][col];
+            down = ship[row+1][col];
+            if (down != null) neighbors.add(down);
         } catch (ArrayIndexOutOfBoundsException ignore){}
         try {
-            this.left = ship[row][col-1];
+            left = ship[row][col-1];
+            if (left != null) neighbors.add(left);
         } catch (ArrayIndexOutOfBoundsException ignore){}
         try {
-            this.right = ship[row][col+1];
+            right = ship[row][col+1];
+            if (right != null) neighbors.add(right);
         } catch (ArrayIndexOutOfBoundsException ignore){}
     }
 
