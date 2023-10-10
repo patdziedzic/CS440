@@ -246,13 +246,14 @@ public class Main {
             return null;
         }
 
+        //printShip(ship, bot, button, initialFire);
+
         //If the bot is closer than the fire, it will definitely win. Return true.
         if(checkDistBotVsFire(bot, initialFire, button, ship))
             return null;
 
-        //printShip(ship, bot, button, initialFire);
 
-
+        //System.out.println("Bot's initial state: " + "(" + bot.getRow() + ", " + bot.getCol() + ")");
         //int t = 0;
         //System.out.println(t);
         while (!bot.isButton && !bot.getOnFire() && !button.getOnFire()) {
@@ -277,6 +278,7 @@ public class Main {
             bot.isBot = false;
             neighbor.isBot = true;
             bot = neighbor;
+            //System.out.println("Has the bot moved?: " + "(" + bot.getRow() + ", " + bot.getCol() + ")");
 
             if (bot.isButton) {
                 //System.out.println("Bot made it to the button!");
@@ -572,6 +574,115 @@ public class Main {
         return Integer.MAX_VALUE;
     }
 
+
+
+/*
+    private static HashMap<Cell, Cell> getOptPath(Cell bot, Cell button, LinkedList<Cell> fireCells, Cell[][] ship, Cell prev) {
+        //PriorityQueue<PQCell> pq = new PriorityQueue<>(new PQCellComparator());
+        PriorityQueue<PQCell> pq = new PriorityQueue<>();
+        HashMap<Cell, Integer> distTo = new HashMap<>(); //key: curr, value: distance from bot to curr
+        HashMap<Cell, Cell> child = new HashMap<>(); //key: parent, value: child
+
+        pq.add(new PQCell(bot, 0));
+        distTo.put(bot, 0);
+
+        int t = 0;
+        while (!pq.isEmpty()) {
+            t++;
+            //System.out.println("time " + t + " with PQ Size: " + pq.size());
+            Cell curr = pq.remove().cell;
+            //System.out.println(curr.getRow() + ", "  + curr.getCol());
+            if (curr.isButton) {
+                return child;
+            }
+
+            for (Cell neighbor : curr.neighbors) {
+                if (neighbor != null && !neighbor.equals(prev) && Bfs.shortestPathBFS_Bot4(bot, neighbor, button, ship) != null && neighbor.isOpen && !neighbor.getOnFire()) {
+                    int tempDist = distTo.get(curr) + 1;
+                    if (!distTo.containsKey(neighbor) || tempDist < distTo.get(neighbor)) {
+                        distTo.put(neighbor, tempDist);
+                        child.put(curr, neighbor);
+                        if (neighbor.isButton) {
+                            return child;
+                        }
+                        int d = h(neighbor, button, fireCells, ship);
+                        if (d != Integer.MAX_VALUE)
+                            pq.add(new PQCell(neighbor, distTo.get(neighbor) + d));
+                    }
+                }
+            }
+        }
+        return null;
+    }
+*/
+
+
+
+
+
+
+
+
+
+
+    private static LinkedList<Cell> getOptimalPath(Cell bot, Cell button, LinkedList<Cell> fireCells, Cell[][] ship) {
+        //PriorityQueue<PQCell> pq = new PriorityQueue<>(new PQCellComparator());
+        PriorityQueue<PQCell> pq = new PriorityQueue<>();
+        HashMap<Cell, Integer> distTo = new HashMap<>(); //key: curr, value: distance from bot to curr
+        HashMap<Cell, Cell> parent = new HashMap<>(); //key: child, value: parent
+
+        pq.add(new PQCell(bot, 0));
+        distTo.put(bot, 0);
+        parent.put(null, bot);
+
+        int t = 0;
+        while (!pq.isEmpty()) {
+            t++;
+            //System.out.println("time " + t + " with PQ Size: " + pq.size());
+            Cell curr = pq.remove().cell;
+            //System.out.println(curr.getRow() + ", "  + curr.getCol());
+            if (curr.isButton) {
+                LinkedList<Cell> optimalPath = new LinkedList<>();
+                Cell ptr = button;
+                while (ptr != null) {
+                    optimalPath.add(ptr);
+                    ptr = parent.get(ptr);
+                }
+                Collections.reverse(optimalPath);
+                return optimalPath;
+            }
+
+            for (Cell neighbor : curr.neighbors) {
+                if (neighbor != null && Bfs.shortestPathBFS(neighbor, button, ship) != null && neighbor.isOpen && !neighbor.getOnFire()) {
+                    //&& !neighbor.equals(prev)
+                    int tempDist = distTo.get(curr) + 1;
+                    if (!distTo.containsKey(neighbor) || tempDist < distTo.get(neighbor)) {
+                        distTo.put(neighbor, tempDist);
+                        parent.put(neighbor, curr);
+                        /*if (neighbor.isButton) {
+                            LinkedList<Cell> optimalPath = new LinkedList<>();
+                            Cell ptr = button;
+                            while (ptr != null) {
+                                optimalPath.add(ptr);
+                                ptr = parent.get(ptr);
+                            }
+                            Collections.reverse(optimalPath);
+                            return optimalPath;
+                        }*/
+                        //int d = h(neighbor, button, fireCells, ship);
+                        //if (d != Integer.MAX_VALUE)
+                        LinkedList<Cell> sp = Bfs.shortestPathBFS(neighbor, button, ship);
+                        //pq.add(new PQCell(neighbor, distTo.get(neighbor) + neighbor.flammability));
+                        if (sp != null)
+                            pq.add(new PQCell(neighbor, distTo.get(neighbor) + sp.size()));
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+
     private static boolean runBot4(Cell[][] ship) {
         //initialize the bot
         int randIndex = Main.rand(0, openCells.size() - 1);
@@ -604,21 +715,36 @@ public class Main {
 
 
 
+
         int t = 0;
-        Cell prev = bot;
+        //Cell prev = bot;
+        LinkedList<Cell> optimalPath = getOptimalPath(bot, button, fireCells, ship);
+        /*for (Cell cell : optimalPath) {
+            if (cell != null) {
+                System.out.println("(Key, Value): " + "{ (" + cell.getRow() + ", " + cell.getCol() + ") " +
+                        "(" + optimalPath.get(cell).getRow() + ", " + optimalPath.get(cell).getCol() + ") }");
+            }
+        }*/
+        if (optimalPath == null) {
+            System.out.println("Optimal Path is null.");
+            return false;
+        }
+        optimalPath.removeFirst();
+
+        System.out.println("Bot's initial state: " + "(" + bot.getRow() + ", " + bot.getCol() + ")");
+
         while (!bot.isButton && !bot.getOnFire() && !button.getOnFire()) {
             t++;
-            HashMap<Cell, Cell> optimalPath = getOptimalPath(bot, button, fireCells, ship, prev);
             if (optimalPath == null) {
                 System.out.println("Optimal Path is null.");
                 return false;
             }
 
             //move the bot
-            Cell neighbor = optimalPath.get(bot);
+            Cell neighbor = optimalPath.removeFirst();
             bot.isBot = false;
             neighbor.isBot = true;
-            prev = bot;
+            //prev = bot;
             bot = neighbor;
             System.out.println("Has the bot moved?: " + "(" + bot.getRow() + ", " + bot.getCol() + ")");
 
@@ -644,45 +770,6 @@ public class Main {
             }
         }
         return false;
-    }
-
-
-    private static HashMap<Cell, Cell> getOptimalPath(Cell bot, Cell button, LinkedList<Cell> fireCells, Cell[][] ship, Cell prev) {
-        //PriorityQueue<PQCell> pq = new PriorityQueue<>(new PQCellComparator());
-        PriorityQueue<PQCell> pq = new PriorityQueue<>();
-        HashMap<Cell, Integer> distTo = new HashMap<>(); //key: curr, value: distance from bot to curr
-        HashMap<Cell, Cell> child = new HashMap<>(); //key: parent, value: child
-
-        pq.add(new PQCell(bot, 0));
-        distTo.put(bot, 0);
-
-        int t = 0;
-        while (!pq.isEmpty()) {
-            t++;
-            //System.out.println("time " + t + " with PQ Size: " + pq.size());
-            Cell curr = pq.remove().cell;
-            //System.out.println(curr.getRow() + ", "  + curr.getCol());
-            if (curr.isButton) {
-                return child;
-            }
-
-            for (Cell neighbor : curr.neighbors) {
-                if (neighbor != null && Bfs.shortestPathBFS_Bot4(bot, neighbor, button, ship) != null && neighbor.isOpen && !neighbor.getOnFire()) {
-                    int tempDist = distTo.get(curr) + 1;
-                    if (!distTo.containsKey(neighbor) || tempDist < distTo.get(neighbor)) {
-                        distTo.put(neighbor, tempDist);
-                        child.put(curr, neighbor);
-                        if (neighbor.isButton) {
-                            return child;
-                        }
-                        int d = h(neighbor, button, fireCells, ship);
-                        if (d != Integer.MAX_VALUE)
-                            pq.add(new PQCell(neighbor, distTo.get(neighbor) + d));
-                    }
-                }
-            }
-        }
-        return null;
     }
 
 
@@ -833,7 +920,7 @@ public class Main {
         System.out.println();
          */
 
-        q = 0;
+        q = 1;
         System.out.println("Bot 4 output: " + runBot4(ship));
     }
 
