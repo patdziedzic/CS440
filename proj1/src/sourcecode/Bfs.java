@@ -123,8 +123,74 @@ public class Bfs {
     }
 
 
+
+
+
+    public static LinkedList<Cell> Dijkstra_Bot4(Cell bot, Cell button, Cell[][] ship){
+        //make sure isVisited is false for all cells
+        for (int r = 0; r < Ship.D; r++) {
+            for (int c = 0; c < Ship.D; c++) {
+                ship[r][c].isVisited = false;
+            }
+        }
+
+        Queue<Cell> Q = new LinkedList<>(); //tell us what to explore next
+        HashMap<Cell, Cell> parentNodes = new HashMap<>(); //keeps track of where bot has visited
+        //^ Map the previous to the next by using .put(next, prev)
+        Q.add(bot);
+        bot.isVisited = true;
+
+        while (!Q.isEmpty()) {
+            bot = Q.remove();
+            //shortestPath.add(bot);
+
+            if(bot.equals(button)) {
+                //Once path found, start from end and go back and store the path into LinkedList
+                LinkedList<Cell> shortestPath = new LinkedList<>();
+                Cell ptr = button;
+                while (ptr != null) {
+                    shortestPath.add(ptr);
+                    ptr = parentNodes.get(ptr);
+                }
+                Collections.reverse(shortestPath);
+                return shortestPath;
+            }
+
+            if(isValid(bot.up)) {
+                parentNodes.put(bot.up, bot); //next, previous
+                Q.add(bot.up);
+                bot.up.isVisited = true;
+            }
+            if(isValid(bot.down)) {
+                parentNodes.put(bot.down, bot);
+                Q.add(bot.down);
+                bot.down.isVisited = true;
+            }
+            if(isValid(bot.left)) {
+                parentNodes.put(bot.left, bot);
+                Q.add(bot.left);
+                bot.left.isVisited = true;
+            }
+            if(isValid(bot.right)) {
+                parentNodes.put(bot.right, bot);
+                Q.add(bot.right);
+                bot.right.isVisited = true;
+            }
+        }
+        return null;
+    }
+
+
+
+
+
+
+
+
+
     //the bot passed in is the neighbor
     //the prev is where the bot is now
+    /*
     public static LinkedList<Cell> shortestPathBFS_Bot4(Cell prev, Cell bot, Cell button, Cell[][] ship){
         //make sure isVisited is false for all cells
         for (int r = 0; r < Ship.D; r++) {
@@ -182,4 +248,5 @@ public class Bfs {
     private static boolean isValid_Bot4(Cell c, Cell prev) {
         return (c != null && !c.equals(prev) && !c.getOnFire() && c.isOpen && !c.isVisited);
     }
+     */
 }
