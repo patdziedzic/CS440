@@ -616,7 +616,7 @@ public class Main {
 
                         //RUN SIMULATIONS
                         int wins = 0;
-                        int numSimulations = 10;
+                        int numSimulations = 4;
                         for (int i = 0; i < numSimulations; i ++) {
                             if (runSimulation_Bot4(neighbor, button, fireCells, ship))
                                 wins++;
@@ -836,7 +836,7 @@ public class Main {
 
     public static void main(String[] args) {
         //Initialize the ship
-
+        /*
         Cell[][] ship = Ship.makeShip();
         for (int i = 0; i < ship.length; i++){
             for (int j = 0; j < ship[0].length; j++){
@@ -844,6 +844,7 @@ public class Main {
                     openCells.add(ship[i][j]);
             }
         }
+         */
 
         //System.out.println("Initial Cell is at row " + Ship.initial.getRow() +
         //        " and col " + Ship.initial.getCol() + "\n\n\n");
