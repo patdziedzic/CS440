@@ -4,7 +4,7 @@ import java.util.*;
 
 public class Main {
     public static double q;
-    private static final int numTests = 100;
+    private static final int numTests = 400;
     private static ArrayList<Cell> openCells = new ArrayList<>();
 
 
@@ -498,7 +498,7 @@ public class Main {
                 totalWins++;
         }
 
-        double avg = (double) totalWins /numTests;
+        double avg = totalWins * 100.0 / numTests;
         System.out.println("Avg Success Rate for q = " + q + " is " + avg);
     }
 
