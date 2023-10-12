@@ -7,9 +7,9 @@ public class Cell {
     private int row;
     private int col;
 
-    //REGARDING OPENNESS
+    //OPENNESS
     public int numOpenNeighbors; //increment for each new open neighbor
-    public boolean isOpen; //initialized false
+    public boolean isOpen;
 
     //REACHING NEIGHBORS OF CELLS
     public Cell up;
@@ -24,9 +24,9 @@ public class Cell {
     public boolean isButton;
 
     //FLAMMABILITY
-    private boolean onFire; //initialized false
-    public double flammability; //flammability of the cell based on neighbors, initially 0
-    public int k; //number of fire neighbours
+    private boolean onFire;
+    public double flammability; //flammability of the cell based on neighbors
+    public int k; //number of fire neighbors
 
     /**
      * Cell Constructor given row and col
@@ -46,7 +46,7 @@ public class Cell {
     }
 
     /**
-     * Copy the given Cell
+     * Copy constructor using the given Cell
      */
     public Cell(Cell cell) {
         if (cell != null) {
@@ -80,6 +80,9 @@ public class Cell {
         return col;
     }
 
+    /**
+     * Set the neighbors of this cell and add them to the list of neighbors
+     */
     public void setNeighbors(Cell[][] ship) {
         try {
             up = ship[row-1][col];
@@ -99,6 +102,9 @@ public class Cell {
         } catch (ArrayIndexOutOfBoundsException ignore){}
     }
 
+    /**
+     * Increment k (the number of fire neighbors) by 1 and adjust flammability
+     */
     public void incK() {
         k++;
         flammability = 1 - Math.pow((1 - Main.q), k);
@@ -125,15 +131,6 @@ public class Cell {
                 right.incK();
         }
     }
-
-    /*
-    private void changeNeighborK(int row, int col) {
-        try {
-
-        } catch (ArrayIndexOutOfBoundsException ignore) { }
-    }
-     */
-
 
     /**
      * Two Cells are equal if they have the same row and col

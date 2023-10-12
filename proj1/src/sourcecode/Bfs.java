@@ -1,9 +1,14 @@
 package sourcecode;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class Bfs {
-
+    /**
+     * Shortest Path BFS
+     */
     public static LinkedList<Cell> shortestPathBFS(Cell bot, Cell button, Cell[][] ship){
         //make sure isVisited is false for all cells
         for (int r = 0; r < Ship.D; r++) {
@@ -14,13 +19,13 @@ public class Bfs {
 
         Queue<Cell> Q = new LinkedList<>(); //tell us what to explore next
         HashMap<Cell, Cell> parentNodes = new HashMap<>(); //keeps track of where bot has visited
-        //^ Map the previous to the next by using .put(next, prev)
+        //^ Map the previous to the next by using .put(next, previous)
+
         Q.add(bot);
         bot.isVisited = true;
         
         while (!Q.isEmpty()) {
             bot = Q.remove();
-            //shortestPath.add(bot);
 
             if(bot.equals(button)) {
                 //Once path found, start from end and go back and store the path into LinkedList
@@ -35,7 +40,7 @@ public class Bfs {
             }
     
             if(isValid(bot.up)) {
-                parentNodes.put(bot.up, bot); //next, previous
+                parentNodes.put(bot.up, bot);
                 Q.add(bot.up);
                 bot.up.isVisited = true;
             }
@@ -58,11 +63,17 @@ public class Bfs {
         return null;
     }
 
+    /**
+     * Check if a neighbor is valid to search
+     */
     private static boolean isValid(Cell c) {
         return (c != null && !c.getOnFire() && c.isOpen && !c.isVisited);
     }
 
 
+    /**
+     * Shortest Path BFS using isValid_Bot3()
+     */
     public static LinkedList<Cell> shortestPathBFS_Bot3(Cell bot, Cell button, Cell[][] ship){
         //make sure isVisited is false for all cells
         for (int r = 0; r < Ship.D; r++) {
@@ -74,12 +85,12 @@ public class Bfs {
         Queue<Cell> Q = new LinkedList<>(); //tell us what to explore next
         HashMap<Cell, Cell> parentNodes = new HashMap<>(); //keeps track of where bot has visited
         //^ Map the previous to the next by using .put(next, prev)
+
         Q.add(bot);
         bot.isVisited = true;
 
         while (!Q.isEmpty()) {
             bot = Q.remove();
-            //shortestPath.add(bot);
 
             if(bot.equals(button)) {
                 //Once path found, start from end and go back and store the path into LinkedList
@@ -117,9 +128,11 @@ public class Bfs {
         return null;
     }
 
+    /**
+     * Check if a neighbor is valid to search for bot 3
+     */
     private static boolean isValid_Bot3(Cell c) {
-        //also check potential fire neighbors
+        //additionally check potential fire neighbors
         return (c != null && !c.getOnFire() && c.isOpen && !c.isVisited && c.k == 0);
     }
-
 }

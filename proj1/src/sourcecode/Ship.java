@@ -4,12 +4,14 @@ import java.util.ArrayList;
 
 public class Ship {
     //the ship layout - 2D array of Cell objects
-    public static final int D = 20;
+    public static final int D = 50;
     public static Cell[][] ship;
     public static Cell initial;
 
 
-
+    /**
+     * Make the ship, including opening dead ends
+     */
     public static Cell[][] makeShip() {
         //ship is a D x D 2D array of Cell objects
         ship = new Cell[D][D];
@@ -18,16 +20,13 @@ public class Ship {
                 ship[r][c] = new Cell(r, c);
             }
         }
-        //System.out.println("Ship is initialized.");
 
         //open the initial cell
         int row = Main.rand(0, D-1);
         int col = Main.rand(0, D-1);
         initial = openCell(ship[row][col]);
-        //printShip();
 
         openBlockedCandidates();
-        //System.out.println("Dead ends are opening");
         openDeadEnds();
 
         for (int r = 0; r < D; r++) {
@@ -39,8 +38,10 @@ public class Ship {
         return ship;
     }
 
+    /**
+     * Randomly open blocked candidates to make the ship
+     */
     private static void openBlockedCandidates() {
-
         //populating blocked candidates
         ArrayList<Cell> blockedCandidates = new ArrayList<>(); //blocked cells with one open neighbor
         for (int r = 0; r < D; r++) {
@@ -54,10 +55,9 @@ public class Ship {
             int randomIndex = Main.rand(0, blockedCandidates.size() - 1);
             Cell randomBlocked = blockedCandidates.get(randomIndex);
             openCell(randomBlocked);
-            //printShip();
             updateBlockedArrayList(blockedCandidates);
 
-            //Check U/D/L/R if it is now a candidate, if it is then add it
+            //Check neighbors - if one is now a candidate, then add it
             //up
             try {
                 addBlockedCandidate(ship[randomBlocked.getRow() - 1][randomBlocked.getCol()], blockedCandidates);
@@ -79,14 +79,19 @@ public class Ship {
         }
     }
 
+    /**
+     * Add a blocked candidate to the list of blocked candidates
+     */
     private static void addBlockedCandidate(Cell cell, ArrayList<Cell> a) {
         if (!cell.isOpen && cell.numOpenNeighbors == 1) {
             a.add(cell);
         }
     }
 
+    /**
+     * Randomly open about 50% of the dead ends
+     */
     private static void openDeadEnds() {
-        //handling dead ends
         ArrayList<Cell> deadEnds = new ArrayList<>();
         for (int r = 0; r < D; r++) {
             for (int c = 0; c < D; c++) {
@@ -125,11 +130,10 @@ public class Ship {
                 Cell randomNeighbor = blockedNeighbors.get(randomIndex);
                 openCell(randomNeighbor);
             }
-            //printShip();
+
             updateDeadEndsArrayList(deadEnds);
         }
     }
-
 
     /**
      * Updates blockedCandidates
@@ -153,7 +157,6 @@ public class Ship {
         }
     }
 
-
     /**
      * Opens a cell
      */
@@ -161,7 +164,7 @@ public class Ship {
         //open the given cell
         cell.isOpen = true;
 
-        //Set Neighbors' numOpenNeighbors
+        //Set neighbors' numOpenNeighbors
         //up
         changeNumOpenNeighbors(cell.getRow() - 1, cell.getCol());
         //down
@@ -174,6 +177,9 @@ public class Ship {
         return cell;
     }
 
+    /**
+     * Increment the number of open neighbors for the newly opened cell
+     */
     private static void changeNumOpenNeighbors(int row, int col) {
         try {
             ship[row][col].incNumOpenNeighbors();
